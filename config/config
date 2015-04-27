@@ -1,0 +1,68 @@
+#build information
+name:ceps
+create-site version:7.x-0.21
+project version:0.1.0
+repository:/var/repositories/customprojects/ceps
+project type:1
+skeleton repo:/var/repositories/hostingplatform/skeletons/skeleton7
+skeleton version:0.1.11
+make file:NA
+make version:NA
+installprofile:dropsolid_profile
+installprofileversion:7.x-0.1
+user:ceps
+password:ceps794658
+
+#development
+securitygroup:root:ceps
+developers:admin jeroen gunther tanvir ahmad shaqir stijn evy davy rob jonathan thomasdeneve hannes thomasdb maarten jan jens kevinvb joristm jelleh lennartvv paulvb yannick laurensvandamme
+
+#dev
+dev:admin@92.243.15.236:/var/www/customprojects/ceps/dev
+devmysqlserver:db01.dropsolid.com
+devmysqldatabase:ceps_dev
+devmysqlusername:ceps
+devmysqlpassword:ceps794658
+vhost:92.243.15.236 /var/www/customprojects/ceps/dev
+
+#production
+production:admin@92.243.15.236:/var/www/customprojects/ceps/production
+productionmysqlserver:db01.dropsolid.com
+productionmysqldatabase:ceps_production
+productionmysqlusername:ceps
+productionmysqlpassword:ceps794658
+vhost:92.243.15.236 /var/www/customprojects/ceps/production
+
+#staging
+staging:admin@92.243.15.236:/var/www/customprojects/ceps/staging
+stagingmysqlserver:db01.dropsolid.com
+stagingmysqldatabase:ceps_staging
+stagingmysqlusername:ceps
+stagingmysqlpassword:ceps794658
+vhost:92.243.15.236 /var/www/customprojects/ceps/staging
+
+#testbot1
+testbot1:admin@92.243.15.236:/var/www/customprojects/ceps/testbot1
+testbot1mysqlserver:db01.dropsolid.com
+testbot1mysqldatabase:ceps_testbot1
+testbot1mysqlusername:ceps
+testbot1mysqlpassword:ceps794658
+vhost:92.243.15.236 /var/www/customprojects/ceps/testbot1
+
+#live - example change it
+#ilibris:u10333@151.236.220.185:/sites/www/htdocs
+#dns:dominiquedecooman.com A 151.236.220.185
+#dns2:www.dominiquedecooman.com CNAME web01.dropsolid.ilibris.be
+#vhostilibris:ServerAlias dominiquedecooman.com.anothercoolproject.com
+#ftppass:ACzGwmqBCFtxq
+#ilibrismysqlserver:int01.dropsolid.ilibris.local
+#ilibrismysqldatabase:db10333-www
+#ilibrismysqlusername:u10333-www
+#ilibrismysqlpassword:KCpmpFCsrmrcD
+#varnish:e34e7331-5532-44f3-a82e-f547fd0e79dd
+#solrhost:int01.dropsolid.ilibris.local
+#solrport:8080
+#solrurl:/solr/solr10364-platform
+
+#services
+redmine:to fill in
