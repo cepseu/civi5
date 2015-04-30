@@ -1,0 +1,209 @@
+<?php
+
+/**
+  * @file
+ *  Install file
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function uc_ogone_payment_schema() {
+  $schema['uc_payment_ogone'] = array(
+    'description' => 'Table for ogone payments.',
+    'fields' => array(
+      'order_id' => array(
+        'description' => 'Ubercart order id',
+        'type' => 'int',
+        'size' => 'medium',
+        'not null' => TRUE,
+      ),
+      'pay_id' => array(
+        'description' => 'The Pay ID from Ogone.',
+        'type' => 'int',
+        'length' => 10,
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'payment_method' => array(
+        'description' => 'Ogone payment method',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'order_status' => array(
+        'description' => 'Order payment status',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ),
+      'sha1_test_succes' => array(
+        'description' => 'Ogone SHA1 test succes',
+        'type' => 'text',
+        'size' => 'small',
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'Timestamp of the callback occurence',
+        'mysql_type' => 'DATETIME',
+        'pgsql_type' => 'timestamp without time zone',
+        'not null' => TRUE,
+      ),
+      'payment_date' => array(
+        'description' => 'Ogone payment transaction date',
+        'mysql_type' => 'DATETIME',
+        'pgsql_type' => 'timestamp without time zone',
+        'not null' => TRUE,
+      ),
+      'payment_acceptance' => array(
+        'description' => 'Ogone acceptance code returned by acquirer',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'card_brand' => array(
+        'description' => 'Card brand',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'card_no' => array(
+        'description' => 'Card number',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'error_code' => array(
+        'description' => 'Order payment error code',
+        'type' => 'varchar',
+        'length' => 8,
+        'not null' => TRUE,
+      ),
+      'error_message' => array(
+        'description' => 'Order payment error message',
+        'type' => 'varchar',
+        'length' => 255, 
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('order_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function uc_ogone_payment_install() {
+
+}
+
+function uc_ogone_payment_update_6001() {
+  db_add_field($return, 'uc_payment_ogone', 'pay_id', array(
+    'description' => 'The Pay ID from Ogone.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'unsigned' => TRUE,
+  ));
+}
+
+/**
+ * Add order statuses
+ */
+function uc_ogone_payment_update_6200() {
+  $insert = "INSERT INTO {uc_order_statuses} (order_status_id, title, state, weight, locked) ";
+  db_query($insert . "VALUES('ogone_invalid', '" . 'Payment invalid' . "', 'canceled', -22, 1);");
+  db_query($insert . "VALUES('ogone_declined', '" . 'Payment declined' . "', 'canceled', -21, 1);");
+  db_query($insert . "VALUES('ogone_canceled', '" . 'Payment canceled by Ogone' . "', 'canceled', -19, 1);");
+  db_query($insert . "VALUES('ogone_deleted', '" . 'Payment deleted at Ogone' . "', 'canceled', -18, 1);");
+  db_query($insert . "VALUES('ogone_refund', '" . 'Payment refund' . "', 'canceled', -17, 1);");
+  db_query($insert . "VALUES('ogone_auth_expired', '" . 'Authorization expired' . "', 'canceled', -16, 1);");
+  db_query($insert . "VALUES('ogone_stored', '" . 'Payment pending at Ogone' . "', 'post_checkout', 1, 1);");
+  db_query($insert . "VALUES('ogone_uncertain_auth', '" . 'Authorization uncertain' . "', 'post_checkout', 2, 1);");
+  db_query($insert . "VALUES('ogone_uncertain_pay', '" . 'Payment uncertain' . "', 'post_checkout', 3, 1);");
+  db_query($insert . "VALUES('ogone_authorized', '" . 'Payment authorized' . "', 'payment_received', 8, 1);");
+  db_query($insert . "VALUES('ogone_uncertain_cap', '" . 'Payment commit uncertain' . "', 'payment_received', 9, 1);");
+
+
+/**
+ * Adjust table to record more feedback information
+ */
+  $table = 'uc_payment_ogone';
+
+  db_drop_field($return, $table, 'description');
+  db_add_field($return, $table, 'timestamp', array(
+    'description' => 'Timestamp of the callback occurence.',
+    'mysql_type' => 'DATETIME',
+    'pgsql_type' => 'timestamp without time zone',
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'payment_date', array(
+    'description' => 'Ogone payment transaction date',
+    'mysql_type' => 'DATETIME',
+    'pgsql_type' => 'timestamp without time zone',
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'payment_acceptance', array(
+    'description' => 'Ogone acceptance code returned by acquirer',
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'card_brand', array(
+    'description' => 'Card brand',
+    'type' => 'varchar',
+    'length' => 20,
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'card_no', array(
+    'description' => 'Card number',
+    'type' => 'varchar',
+    'length' => 20,
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'error_code', array(
+    'description' => 'Order payment error code',
+    'type' => 'varchar',
+    'length' => 8,
+    'not null' => TRUE,
+  ));
+  db_add_field($return, $table, 'error_message', array(
+    'description' => 'Order payment error message',
+    'type' => 'varchar',
+    'length' => 255, 
+    'not null' => TRUE,
+  ));
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function uc_ogone_payment_uninstall() {
+  variable_del('ogone_url');
+  variable_del('ogone_catalog_url');
+  variable_del('ogone_pspid_id');
+  variable_del('ogone_currency');
+  variable_del('ogone_language');
+  variable_del('ogone_layout_title');
+  variable_del('ogone_layout_template');
+  variable_del('ogone_layout_bgcolor');
+  variable_del('ogone_layout_txtcolor');
+  variable_del('ogone_layout_tblbgcolor');
+  variable_del('ogone_layout_tbltxtcolor');
+  variable_del('ogone_layout_buttonbgcolor');
+  variable_del('ogone_layout_buttontxtcolor');
+  variable_del('ogone_layout_logo');
+  variable_del('ogone_layout_fonttype');
+  variable_del('ogone_hashing_method');
+  variable_del('ogone_sha1_signature_pre');
+  variable_del('ogone_sha1_signature_post');
+  variable_del('ogone_payment_brands_disabled');
+  variable_del('ogone_payment_brands');
+  variable_del('ogone_select_at_checkout');
+  $language_method_exclusion_list=variable_get('exclude_country_methods', array());
+  foreach ($language_method_exclusion_list as $langcode) {
+    variable_del('ogone_exclude_methods_country_' . $langcode);
+  }
+  variable_del('exclude_country_methods');
+}

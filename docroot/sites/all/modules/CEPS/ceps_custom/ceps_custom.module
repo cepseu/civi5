@@ -1,0 +1,79 @@
+<?php
+
+function ceps_custom_init() {
+
+	$options = array('preprocess' => FALSE, 'group' => CSS_THEME);
+	drupal_add_css(drupal_get_path('module', 'ceps_custom') . '/ceps_custom.css', $options);
+}
+
+function ceps_custom_theme_registry_alter(&$theme_registry) {
+
+	/**
+	 * Replace theme_webform_element function in theme registry
+	 */
+	if (isset($theme_registry['webform_element'])) {
+		$theme_registry['webform_element']['function'] = 'theme_ceps_custom_webform_element';
+	}	
+}
+
+function theme_ceps_custom_webform_element($vars) {
+
+	/**
+	 * Add div wrapper to children element before theme it
+	 */
+	$type	  = $vars['element']['#type'];
+	$children = $vars['element']['#children'];
+	if (($type == 'textfield') || ($type == 'select') || ($type == 'date') || ($type == 'webform_email') 
+								|| ($type == 'markup') || ($type == 'managed_file')) {
+		$class = str_replace("_", "-", $type);
+		$vars['element']['#children']  = '<div class="form-item-field ' . $class . '">';
+		$vars['element']['#children'] .= $children;
+		$vars['element']['#children'] .= '</div>';
+	}
+	if ($type == 'managed_file') {
+		$vars['element']['#children'] .= '<div class="clear"></div>';
+	}	
+	return theme_webform_element($vars);
+}
+
+function ceps_custom_form_alter(&$form, $form_state, $form_id) {
+  
+	global $user;
+	/**
+	 * Check for valid webform
+	 */
+	if (isset($form['#node']->type) && ($form['#node']->type == 'webform') && 
+					$form_id == ($form['#node']->type . '_client_form_' . $form['#node']->nid)) {
+		// attach css			
+		$form['#attached']['css'] = array(drupal_get_path('module', 'ceps_custom') . '/ceps_custom_webform.css');
+
+		//foreach($form['submitted'] as &$field) {
+		//	if(($field['#type'] == 'textfield') || ($field['#type'] == 'select')) {
+    	//	}
+  		//}
+	}
+	else if ($form_id == 'views_exposed_form') {
+		if ($form['#id'] == 'views-exposed-form-solr-search-search-advanced-page') {
+			/**
+			 * Change form action from advanced-search to search path
+			 * to prevent the hiding of primary menu links
+			 */
+			$form['#action'] = '/search';
+		}
+	}
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * types of plugins: layouts, styles, args, contexts, content_types.
+ */
+function ceps_custom_ctools_plugin_directory($owner, $plugin_type) {
+
+	// We're just providing layout plugins.
+	if ($owner == 'panels' && $plugin_type == 'layouts') {
+		// ceps_custom_ctools_plugin_directory.
+		return "plugins/$plugin_type";
+	}
+}

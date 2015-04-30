@@ -1,0 +1,1 @@
+live=( 'ip:web06.dropsolid.com' 'port:22' 'user:infra' 'pass:' 'wwwroot:/var/www/www.ceps.eu/docroot/' 'dbname:db_drupal_ceps' 'dbhost:localhost' 'dbuser:u_dru_ceps' 'dbpass:NyOn33dhUYvZEHeh' 'varnishkey:c98ecdbc-a33b-421d-bba1-6e0d3f5c708c' 'solrhost:127.0.0.1' 'solrport:8983' 'solrurl:/solr/#/~cores/ceps' 'dns1:' 'dns2:' 'url,ceps.eu' )
