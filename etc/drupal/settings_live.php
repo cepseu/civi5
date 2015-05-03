@@ -58,3 +58,10 @@
      $conf['cache_default_class'] = 'MemCacheDrupal';
      $conf['cache_class_cache_form'] = 'DrupalDatabaseCache';
      $conf['memcache_key_prefix'] = 'ceps';
+
+     /**
+      * Solr
+      */
+     $conf['dropsolid_host_solr'] = '127.0.0.1';
+     $conf['dropsolid_port_solr'] = '';
+     $conf['dropsolid_path_solr'] = '/solr/#/~cores/ceps';
