@@ -53,3 +53,12 @@
         '%dump' => '/tmp/sql-sync-production-'.$project.'-local.sql',
       )
     );
+
+    $aliases[$project.'.live'] = array(
+      'root' => '/var/www/www.ceps.eu/docroot/',
+      'remote-host' => 'web06.dropsolid.com',
+      'remote-user' => 'infra',
+      'path-aliases' => array(
+        '%dump' => '/tmp/sql-sync-production-live-ceps.sql',
+      )
+    );
