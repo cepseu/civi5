@@ -31,7 +31,7 @@ drush cc all
 #SOLRACTIVE=`cat ../config | grep '^solractive:' | sed 's/^solractive://g'`
 #echo 'solractive:'$SOLRACTIVE
 
-SOLRACTIVE=
+SOLRACTIVE=1
 if [[ $SOLRACTIVE -eq 1 ]]; then
   #set the solr env
   drush php-eval 'glue_site_set_solr_settings('apache_solr')'
