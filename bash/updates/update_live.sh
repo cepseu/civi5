@@ -34,10 +34,10 @@ drush cc all
 SOLRACTIVE=1
 if [ $SOLRACTIVE -eq 1 ]; then
   #set the solr env
-  drush php-eval 'glue_site_set_solr_settings('apache_solr')'
+#  drush php-eval 'glue_site_set_solr_settings('apache_solr')'
   #index
   drush search-api-clear apache_solr_index
-  drush sapi-aq
+#  drush sapi-aq
   drush queue-run-concurrent search_api_indexing_queue 8
  else
   echo Solr not set to active, skipping configuration
