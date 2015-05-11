@@ -56,6 +56,8 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
+# Added Jan because download paths get served from system instead of files
+RewriteRule ^system/(.+)$ /sites/default/$1 [R=301,L]
 RewriteRule ^book/(.+)$ /publications/$1 [R=301,L]
 RewriteRule ^author/(.+)$ /content/$1 [R=301,L]
 RewriteRule ^member/(.+)$ /profiles/$1 [R=301,L]
