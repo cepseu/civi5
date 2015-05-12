@@ -210,6 +210,11 @@ $databases['default']['default']['prefix']= array(
       $conf['varnish_bantype'] = 0;
       $conf['cache_backends'][] = 'sites/all/modules/contrib/varnish/varnish.cache.inc';
       $conf['cache_class_cache_page'] = 'VarnishCache';
+      // Jan added params - Varnish sits idle if params not set here ....
+      $conf['cache'] = 1;
+      $conf['cache_lifetime'] = 0;
+      $conf['page_cache_maximum_age'] = 600;
+
       // Drupal 7 does not cache pages when we invoke hooks during bootstrap. This needs
       // to be disabled.
       $conf['page_cache_invoke_hooks'] = FALSE;
@@ -227,4 +232,4 @@ $databases['default']['default']['prefix']= array(
       */
      $conf['dropsolid_host_solr'] = '127.0.0.1';
      $conf['dropsolid_port_solr'] = '8983';
-     $conf['dropsolid_path_solr'] = '/solr/#/~cores/ceps';
+     $conf['dropsolid_path_solr'] = '/solr/ceps';
