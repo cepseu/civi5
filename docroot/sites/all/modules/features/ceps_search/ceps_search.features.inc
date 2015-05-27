@@ -7,10 +7,12 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function ceps_search_ctools_plugin_api($module = NULL, $api = NULL) {
+function ceps_search_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
   if ($module == "page_manager" && $api == "pages_default") {
     return array("version" => "1");
   }
+  list($module, $api) = func_get_args();
   if ($module == "pm_existing_pages" && $api == "pm_existing_pages") {
     return array("version" => "1");
   }
@@ -19,8 +21,8 @@ function ceps_search_ctools_plugin_api($module = NULL, $api = NULL) {
 /**
  * Implements hook_views_api().
  */
-function ceps_search_views_api($module = NULL, $api = NULL) {
-  return array("api" => "3.0");
+function ceps_search_views_api() {
+  return array("version" => "3.0");
 }
 
 /**
@@ -32,7 +34,7 @@ function ceps_search_default_search_api_index() {
     "name" : "SOLR Node Index",
     "machine_name" : "solr_node_index",
     "description" : null,
-    "server" : "database_server",
+    "server" : "solr_search_service",
     "item_type" : "node",
     "options" : {
       "index_directly" : 1,
@@ -139,7 +141,7 @@ function ceps_search_default_search_api_server() {
       "scheme" : "http",
       "host" : "localhost",
       "port" : "8983",
-      "path" : "\\/solr/#/~cores/ceps",
+      "path" : "\\/solr\\/ceps",
       "http_user" : "",
       "http_pass" : "",
       "excerpt" : 1,
@@ -147,7 +149,9 @@ function ceps_search_default_search_api_server() {
       "highlight_data" : 0,
       "skip_schema_check" : 0,
       "solr_version" : "3",
-      "http_method" : "AUTO"
+      "http_method" : "AUTO",
+      "autocorrect_spell" : 1,
+      "autocorrect_suggest_words" : 1
     },
     "enabled" : "1"
   }');

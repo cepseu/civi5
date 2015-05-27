@@ -42,11 +42,10 @@ function ceps_search_default_page_manager_handlers() {
   );
   $display->cache = array();
   $display->title = '';
-  $display->uuid = 'b59c9ee8-7b21-4f00-bbef-5c443fcbfff5';
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-a5110577-e407-436a-aff9-f50e4ff9bf9f';
+    $pane->pid = 'new-1';
     $pane->panel = 'main';
     $pane->type = 'block';
     $pane->subtype = 'views-f4291f1b3867b84a863bbec6aa9deedf';
@@ -65,11 +64,10 @@ function ceps_search_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $pane->uuid = 'a5110577-e407-436a-aff9-f50e4ff9bf9f';
-    $display->content['new-a5110577-e407-436a-aff9-f50e4ff9bf9f'] = $pane;
-    $display->panels['main'][0] = 'new-a5110577-e407-436a-aff9-f50e4ff9bf9f';
+    $display->content['new-1'] = $pane;
+    $display->panels['main'][0] = 'new-1';
     $pane = new stdClass();
-    $pane->pid = 'new-32111cd5-bebe-4f8e-8054-ab0027fd823f';
+    $pane->pid = 'new-2';
     $pane->panel = 'main';
     $pane->type = 'views';
     $pane->subtype = 'solr_search';
@@ -99,11 +97,10 @@ function ceps_search_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = array();
-    $pane->uuid = '32111cd5-bebe-4f8e-8054-ab0027fd823f';
-    $display->content['new-32111cd5-bebe-4f8e-8054-ab0027fd823f'] = $pane;
-    $display->panels['main'][1] = 'new-32111cd5-bebe-4f8e-8054-ab0027fd823f';
+    $display->content['new-2'] = $pane;
+    $display->panels['main'][1] = 'new-2';
   $display->hide_title = PANELS_TITLE_FIXED;
-  $display->title_pane = 'new-a5110577-e407-436a-aff9-f50e4ff9bf9f';
+  $display->title_pane = 'new-1';
   $handler->conf['display'] = $display;
   $export['pm_existing_pages_existing_search_pages_panel_context'] = $handler;
 
