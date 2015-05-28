@@ -34,7 +34,7 @@
                   </div>
                 <?php endif; ?>
               </td>
-            <tr>
+            </tr>
           </table>
         </div>
       </td>
