@@ -139,14 +139,14 @@ function ceps_search_default_search_api_server() {
       "scheme" : "http",
       "host" : "localhost",
       "port" : "8983",
-      "path" : "\\/solr/#/~cores/ceps",
+      "path" : "\\/solr/ceps",
       "http_user" : "",
       "http_pass" : "",
       "excerpt" : 1,
       "retrieve_data" : 0,
       "highlight_data" : 0,
       "skip_schema_check" : 0,
-      "solr_version" : "3",
+      "solr_version" : "4",
       "http_method" : "AUTO"
     },
     "enabled" : "1"
