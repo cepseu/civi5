@@ -186,8 +186,8 @@ $databases['default']['default']['prefix']= array(
       $drupal_hash_salt = 'Wuc3CPLHTfTHGXLIzmW7Hn8iS-ErWaJlJOL2nhed2xI';
 
 //      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
-// Temp base url to ip for testing
-      $base_url = 'http://185.26.125.173';
+      // Temp base url to ip for testing
+      $base_url = 'http://www.cepstest.eu';
       ini_set('session.gc_probability', 1);
       ini_set('session.gc_divisor', 100);
       ini_set('session.gc_maxlifetime', 200000);
@@ -202,7 +202,7 @@ $databases['default']['default']['prefix']= array(
        * Varnish
        */
       $conf['varnish_flush_cron'] = 0;
-      $conf['varnish_version'] = '3';
+      $conf['varnish_version'] = '4';
       $conf['varnish_control_terminal'] = '127.0.0.1:6082';
       $conf['varnish_control_key'] = 'c98ecdbc-a33b-421d-bba1-6e0d3f5c708c';
       $conf['varnish_socket_timeout'] = '250';
@@ -212,8 +212,8 @@ $databases['default']['default']['prefix']= array(
       $conf['cache_class_cache_page'] = 'VarnishCache';
       // Jan added params - Varnish sits idle if params not set here ....
       $conf['cache'] = 1;
-      $conf['cache_lifetime'] = 0;
-      $conf['page_cache_maximum_age'] = 600;
+      $conf['cache_lifetime'] = 86400;
+      $conf['page_cache_maximum_age'] = 86400;
 
       // Drupal 7 does not cache pages when we invoke hooks during bootstrap. This needs
       // to be disabled.
