@@ -57,8 +57,7 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  * Datasource (DSN) format:
  *      define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
  */
-define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:ceps794658@localhost/ceps_local?new_link=true' );
-
+define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:tralala07@localhost/db_drupal_ceps?new_link=true' );
 /**
  * CiviCRM Database Settings
  *
@@ -78,7 +77,7 @@ define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:ceps794658@localhost/ceps_loc
  *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
  *
  */
-define( 'CIVICRM_DSN'          , 'mysql://u_civ_ceps:vO8mHQoaMKSVYecx@46.226.110.9/ceps_civi?new_link=true');
+define( 'CIVICRM_DSN'          , 'mysql://u_civ_ceps:vO8mHQoaMKSVYecx@localhost/db_civi_ceps?new_link=true' );
 
 /**
  * CiviCRM Logging Database
@@ -122,8 +121,8 @@ define('CIVICRM_LOGGING_DSN', CIVICRM_DSN);
 
 global $civicrm_root;
 
-$civicrm_root = '/home/soldier/websites/customprojects/ceps.local/docroot/sites/all/modules/civicrm';
-define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/home/soldier/websites/customprojects/ceps.local/docroot/sites/default/files/civicrm/templates_c/' );
+$civicrm_root = '/var/www/www.ceps.eu/docroot/sites/all/modules/civicrm';
+define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/www.ceps.eu/docroot/sites/default/files/civicrm/templates_c/' );
 
 /**
  * Site URLs:
@@ -150,7 +149,7 @@ define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/home/soldier/websites/customprojects/ce
  *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/joomla/' );
  *
  */
-define( 'CIVICRM_UF_BASEURL'      , 'http://ceps.local/' );
+define( 'CIVICRM_UF_BASEURL'      , 'http://cepstest.eu/' );
 
 /*
  * If you are using any CiviCRM script in the bin directory that
