@@ -32,7 +32,7 @@ function ceps_search_default_search_api_index() {
     "name" : "SOLR Node Index",
     "machine_name" : "solr_node_index",
     "description" : null,
-    "server" : "database_server",
+    "server" : "Solr Search service ",
     "item_type" : "node",
     "options" : {
       "index_directly" : 1,
