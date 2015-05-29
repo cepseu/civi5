@@ -185,9 +185,7 @@ $databases['default']['default']['prefix']= array(
       $update_free_access = FALSE;
       $drupal_hash_salt = 'Wuc3CPLHTfTHGXLIzmW7Hn8iS-ErWaJlJOL2nhed2xI';
 
-//      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
-      // Temp base url to ip for testing
-      $base_url = 'http://www.cepstest.eu';
+      $base_url = 'http://ceps.eu';  // NO trailing slash!
       ini_set('session.gc_probability', 1);
       ini_set('session.gc_divisor', 100);
       ini_set('session.gc_maxlifetime', 200000);
@@ -212,20 +210,20 @@ $databases['default']['default']['prefix']= array(
       $conf['cache_class_cache_page'] = 'VarnishCache';
       // Jan added params - Varnish sits idle if params not set here ....
       $conf['cache'] = 1;
-      $conf['cache_lifetime'] = 86400;
-      $conf['page_cache_maximum_age'] = 86400;
+//      $conf['cache_lifetime'] = 86400;
+//      $conf['page_cache_maximum_age'] = 86400;
 
       // Drupal 7 does not cache pages when we invoke hooks during bootstrap. This needs
       // to be disabled.
       $conf['page_cache_invoke_hooks'] = FALSE;
 
      /**
-      * Memcache
-      */
+      * Memcache - Disabled because it slows down Varnish
      $conf['cache_backends'][] = './sites/all/modules/contrib/memcache/memcache.inc';
      $conf['cache_default_class'] = 'MemCacheDrupal';
      $conf['cache_class_cache_form'] = 'DrupalDatabaseCache';
      $conf['memcache_key_prefix'] = 'ceps';
+      */
 
      /**
       * Solr

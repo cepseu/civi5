@@ -149,7 +149,7 @@ define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/www.ceps.eu/docroot/sites/defau
  *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/joomla/' );
  *
  */
-define( 'CIVICRM_UF_BASEURL'      , 'http://cepstest.eu/' );
+define( 'CIVICRM_UF_BASEURL'      , 'http://ceps.eu/' );
 
 /*
  * If you are using any CiviCRM script in the bin directory that
