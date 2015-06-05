@@ -1,4 +1,7 @@
 <?php
+/**
+* Copy this file to /sites/default/ and change the paths to your install path.
+*/
 /*
  +--------------------------------------------------------------------+
  | CiviCRM version 3.4                                                |
@@ -54,8 +57,7 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  * Datasource (DSN) format:
  *      define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
  */
-define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:tralala07@localhost/ceps_local?new_link=true' );
-
+define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:ceps794658@localhost/ceps_local?new_link=true' );
 /**
  * CiviCRM Database Settings
  *
@@ -75,7 +77,7 @@ define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:tralala07@localhost/ceps_loca
  *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
  *
  */
-define( 'CIVICRM_DSN'          , 'mysql://ceps:ceps794658@localhost/ceps_civi_local?new_link=true' );
+define( 'CIVICRM_DSN'          , 'mysql://ceps:tralala07@localhost/ceps_civi_local?new_link=true' );
 
 /**
  * CiviCRM Logging Database

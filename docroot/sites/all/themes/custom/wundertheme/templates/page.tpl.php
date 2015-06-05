@@ -81,77 +81,76 @@
  */
 ?>
 <div class="page">
-  <header role="banner">
-    <div class="container">
+	<header role="banner">
+		<div class="container">
+			<?php if ($logo): ?>
+				<figure class="logo">
+					<a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home">
+						<img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+					</a>
+				</figure>
+			<?php endif; ?>
 
-      <?php if ($logo): ?>
-        <figure class="logo">
-        <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home">
-          <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-        </a>
-        </figure>
-      <?php endif; ?>
+			<?php if ($site_name OR $site_slogan ): ?>
+				<div class="site-name-slogan">
+					<?php if($site_name): ?>
+						<?php if($is_front): ?>
+							<h1 class="site-name"><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></h1>
+						<?php else: ?>
+							<p class="site-name"><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></p>
+						<?php endif; ?>
+					<?php endif; ?>
+					<?php if ($site_slogan): ?>
+						<p class="slogan"><?php print $site_slogan; ?></p>
+					<?php endif; ?>
+				</div>	<!-- /.site-name-slogan -->
+			<?php endif; ?>
+			<?php if ($page['header']): ?>
+				<?php print render($page['header']); ?>
+			<?php endif; ?>
+		</div>	<!-- /.container -->
+	</header>
 
-      <?php if($site_name OR $site_slogan ): ?>
-        <div class="site-name-slogan">
-          <?php if($site_name): ?>
-            <?php if($is_front): ?>
-              <h1 class="site-name"><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></h1>
-            <?php else : ?>
-              <p class="site-name"><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></p>
-            <?php endif; ?>
-          <?php endif; ?>
-          <?php if ($site_slogan): ?>
-            <p class="slogan"><?php print $site_slogan; ?></p>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
+	<main role="main" class="main">
 
-      <?php if ($page['header']): ?>
-        <?php print render($page['header']); ?>
-      <?php endif; ?>
+		<?php if(isset($page['highlighted']) && $page['highlighted']){ ?>
+			<?php print render($page['highlighted']); ?>
+		<?php } ?>
 
-    </div>
-  </header>
+		<?php if($messages){ ?>
+			<div class="drupal-messages">
+				<?php print $messages; ?>
+			</div>
+		<?php } ?>
 
-  <div role="main" class="main">
+		<?php if ($title && !$is_front): ?>
+			<?php print render($title_prefix); ?>
+				<h1 class="page-title"><span class="page-title-inside"><?php print $title; ?></span></h1>
+			<?php print render($title_suffix); ?>
+		<?php endif; ?>
 
-    <?php if(isset($page['highlighted']) && $page['highlighted']){ ?>
-      <?php print render($page['highlighted']); ?>
-    <?php } ?>
+		<?php if ($action_links): ?>
+			<ul class="action-links"><?php print render($action_links); ?></ul>
+		<?php endif; ?>
 
-    <?php if($messages){ ?>
-      <div class="drupal-messages">
-        <?php print $messages; ?>
-      </div>
-    <?php } ?>
+		<?php if ($tabs['#primary']): ?>
+			<nav class="tabs"><?php print render($tabs); ?></nav>
+		<?php endif; ?>
 
-    <?php if ($title && !$is_front): ?>
-      <?php print render($title_prefix); ?>
-        <h1 class="page-title"><span class="page-title-inside"><?php print $title; ?></span></h1>
-      <?php print render($title_suffix); ?>
-    <?php endif; ?>
-
-    <?php if ($action_links): ?>
-      <ul class="action-links"><?php print render($action_links); ?></ul>
-    <?php endif; ?>
-
-    <?php if ($tabs['#primary']): ?>
-      <nav class="tabs"><?php print render($tabs); ?></nav>
-    <?php endif; ?>
-
-    <?php print render($page['content']); ?>
-  </div><!--/main-->
-
+		<?php print render($page['content']); ?>
+	
+	</main>	<!--/.main-->
+<!--
   </div>
-    <footer role="contentinfo">
-      <div class="container">
-        <?php print render($page['footer-top']); ?>
-        <div class="footer-first-last clearfix">
-          <?php print render($page['footer-first']); ?>
-          <?php print render($page['footer-last']); ?>
-        </div>
-        <?php print render($page['footer-bottom']); ?>
-      </div>
-    </footer>
-</div>
+--> 
+	<footer role="contentinfo">
+		<div class="container">
+			<?php print render($page['footer-top']); ?>
+			<div class="footer-first-last clearfix">
+				<?php print render($page['footer-first']); ?>
+				<?php print render($page['footer-last']); ?>
+			</div>
+			<?php print render($page['footer-bottom']); ?>
+		</div>	<!-- /.container -->
+	</footer>
+</div>	<!-- /.page -->

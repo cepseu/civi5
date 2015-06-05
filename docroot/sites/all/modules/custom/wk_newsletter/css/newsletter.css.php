@@ -52,7 +52,11 @@ body {
   margin: 0;
   padding: 0;
 }
-
+p {
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+  line-height: 1.5;
+}
 h1, h2, h3, h4, h5, h6 {
   font-family: <?php print $altFont; ?>;
 }
@@ -81,8 +85,11 @@ table td {
 .container {
   min-width: 320px;
   max-width: 600px;
-  padding-left: 1em;
+  padding-left: 0;
+  padding-right: 0;
+/*  padding-left: 1em;
   padding-right: 1em;
+  */
 }
 
 @media screen and (min-width: 600px) {
@@ -118,36 +125,51 @@ table td {
   color: <?php print $stormy_grey; ?>;
   font-family: Georgia, serif;
   font-style: italic;
-  font-size: 22px;
+  font-size: 30px;
+  line-height: 35px;
   margin-bottom: 0;
+  margin-top: 33px;
   padding-top: 5px;
 }
 .page-title {
-  font-size: 1em;
+  font-size: 24px;
+  line-height: 35px;
   font-weight: bold;
-  font-family: 'Flama Basic', helvetica, arial, sans-serif ;
-  margin-top: 0px;
+  font-family: 'Flama Basic', helvetica, arial, sans-serif;
+  margin-top: 5px;
 }
 
 .element-box {
   height: 118px;
+  width: 118px;
 }
 
 .element-box-name {
   padding-top: 20px;
   color: #868686;
   font-size: 10px;
+  line-height: 1.3;
+  font-family: <?php print $fontStack; ?>;
 }
 
 .element-box-abbr {
   font-size: 37px;
   padding: 10px 0;
+  line-height: 1.6;
+  font-family: <?php print $fontStack; ?>;
+}
+
+.field-name-field-html-nl-article .node-html-article .field-name-body {
+  font-size: 16px;
+  line-height: 1.5em;
+  margin-bottom: 7px;
+	
 }
 
 .group-right .field-name-title h2,
 .field-name-field-section-title .field-items .field-item,
 .field-name-field-html-nl-article .field-label td {
-  font-size: 24px;
+  font-size: 32px;
   color: #868686;
   font-weight: normal;
   text-transform: uppercase;
@@ -199,6 +221,9 @@ table td {
   padding-top: 40px;
   padding-bottom: 20px;
 }
+.field-name-field-newsletter-events .field-label > td {
+  color: #FFFFFF;
+}
 
 .field-name-field-editorial,
 .field-name-field-task-force-news,
@@ -210,9 +235,18 @@ table td {
   color: #666666;
 }
 
+.field-name-field-editorial .field-name-title h2 {
+  color: #666666;
+  font-size: 24px;
+}
+.field-name-field-editorial .field-name-body p {
+  color: #666666;
+}
+
 .field-name-field-mentions-in-the-news {
   background: #ecebe9;
   border-top: 1px solid #c9c8c6;
+  font-family: <?php print $fontStack; ?>;
 }
 
 .field-name-field-newsletter-events,
@@ -221,7 +255,7 @@ table td {
 .field-name-social-links,
 .group-center-table {
   background: <?php print $oasis_green; ?>;
-  color: white;
+  color: #FFFFFF;
 }
 .field-name-events-link {
   padding-bottom: 2em;
@@ -235,6 +269,16 @@ table td {
 }
 .profile-title {
   font-weight: bold;
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+  line-height: 1.5;
+  color: <?php print $funeral_grey; ?>;
+}
+.profile-function {
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+  line-height: 1.5;
+  color: <?php print $funeral_grey; ?>;
 }
 .group-center-table p {
   margin: 0;
@@ -252,7 +296,11 @@ table td {
 .field-name-events-link a,
 .field-name-contact-info a,
 .field-name-social-links a {
-  color: white;
+  color: #FFFFFF;
+  font-family: <?php print $fontStack; ?>;
+}
+.field-name-events-link a {
+  font-size: 16px;
 }
 .field-name-field-newsletter-events.grey a {
   color: black;
@@ -273,13 +321,26 @@ table td {
   background: <?php print $oasis_green; ?>;
 }
 .field-name-explore-more-link {
+	border: 0 !important;
+}
+.field-name-explore-more-link a {
+  font-family: <?php print $fontStack; ?>;
+  color: #FFFFFF;
+  font-size: 26px;
+}
+.field-name-all-topics-link a,
+.field-name-research-areas-link a {
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+}
+.field-name-explore-more-link {
   border-top: 1px solid <?php print $base_text_color; ?>;
 }
 .field-name-explore-more-link a {
-  color: white;
+  color: #FFFFFF;
 }
 .field-name-explore-more-link .field-contents {
-  color: white;
+  color: #FFFFFF;
   font-size: 16px;
   padding: 1em 0;
   text-align: center;
@@ -370,11 +431,19 @@ table td {
   font-weight: normal;
   font-size: 16px;
   text-transform: uppercase;
+  font-family: <?php print $fontStack; ?>;
 }
 .field-name-field-conferences tr.field-label,
 .field-name-field-newsletter-events tr.field-label,
 .field-name-field-mentions-in-the-news tr.field-label {
   font-size: 24px;
+  font-family: <?php print $fontStack; ?>;
+}
+.field-name-field-conferences tr.field-label > td,
+.field-name-field-newsletter-events tr.field-label > td,
+.field-name-field-mentions-in-the-news tr.field-label > td {
+  font-size: 32px;
+  font-family: <?php print $fontStack; ?>;
 }
 @media screen and (min-width: 600px) {
   .field-name-field-newsletter-publications tr.field-label,
@@ -475,12 +544,17 @@ dl {
 .field-type-image img {
   max-width: 100%;
   height: auto;
+  margin-bottom: 15px;
 }
 .field-type-node-reference tr.field-item > td {
   border-bottom: 1px solid #d3d2d2;
   padding-bottom: 15px;
   padding-top: 0;
 }
+tr.row-last td tr.row-last > td, tr.row-last > td {
+  border-bottom: 0;
+  
+}	
 .field-type-node-reference tr.field-item:last-child > td,
 .field-name-field-newsletter-events tr.field-item > td,
 .field-name-field-mentions-in-the-news tr.field-item > td {
@@ -559,6 +633,9 @@ img.desktop {
 .field-name-field-newsletter-m-sections .view-mode-newsletter_article .field-name-body,
 .field-name-field-newsletter-m-sections .view-mode-teaser.node-html-article .field-name-body {
   color: <?php print $funeral_grey; ?>;
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+  line-height: 1.5;
 }
 .field-name-node-link a,
 .view-mode-teaser.node-html-article .field-name-node-link a {
@@ -575,7 +652,15 @@ img.desktop {
 .field-name-field-newsletter-events .view-mode-newsletter_article h2,
 .field-name-field-newsletter-events .view-mode-newsletter_article .field-name-body,
 .field-name-field-newsletter-events .view-mode-newsletter_article .field-name-node-link a {
-  color: white;
+  color: #FFFFFF;
+}
+.field-name-field-newsletter-events .field-name-body p {
+	color: #FFFFFF;
+}
+.field-name-field-newsletter-events .node-events .field-name-title a {
+	display: block;
+	font-size: 24px;
+	line-height: 1.5;
 }
 
 .field-name-field-event1-date {
@@ -586,13 +671,23 @@ img.desktop {
 .field-name-social-links .social {
   text-align: center;
 }
+.field-name-contact-info p {
+  color: #FFFFFF;
+  font-family: <?php print $fontStack; ?>;
+}
 .formatted-date-number {
-  font-size: 50px;
+  font-size: 60px;
   line-height: 66px;
   white-space: nowrap;
+  color: #FFFFFF;
+  font-family: <?php print $fontStack; ?>;
 }
 .formatted-date-rest {
-  padding-left: 65px;
+  font-size: 16px;
+  padding-left: 75px;
+  color: #FFFFFF;
+  font-family: <?php print $fontStack; ?>;
+  line-height: 21px;
 }
 @media screen and (min-width: 600px) {
   .formatted-date-number {
@@ -605,6 +700,8 @@ img.desktop {
 }
 .formatted-date-month-year {
   font-weight: bold;
+  padding: 0;
+  margin: 0 0 5px 0;
 }
 
 .ds-2col-table-stacked td.group-left,
@@ -731,8 +828,10 @@ p,
 }
 
 .author {
- color: <?php print $stormy_grey; ?>;
- margin: 1em 0;
+  color: <?php print $stormy_grey; ?>;
+  margin: 1em 0;
+  font-size: 16px;
+  font-family: <?php print $fontStack; ?>;
 }
 
 .node-quote .field-name-body {
@@ -742,4 +841,85 @@ p,
 .node-quote .field-name-field-quote-link2 {
   font-weight: bold;
 }
+.node-quote .field-name-quote-researcher-linked-media,
+.node-quote .field-name-field-quote-link2 a {
+  font-family: <?php print $fontStack; ?>;
+  font-size: 16px;
+  line-height: 1.5;
+}
 
+.field-type-text-with-summary p {
+  color: #666666;
+  margin: 15px 0 15px 0;
+}
+.field-type-text-with-summary > div {
+	margin: 15px 0 15px 0;
+}
+
+.node-type-newsletter-weekly .fields-contents-wrap tr.field-label > td {
+  color: #666666;
+}
+.node-type-newsletter-weekly .formatted-date-number {
+  color: #666666;
+}
+.node-type-newsletter-weekly .formatted-date-rest {
+  color: #666666;
+}
+.node-type-newsletter-weekly .node-events dl {
+	padding: 0;
+	margin: 0;
+	line-height: 1.5;
+}
+.node-type-newsletter-weekly .node-events .field-name-title a {
+  display: block;
+  line-height: 1.5;
+  font-size: 24px;
+  font-family: <?php print $fontStack; ?>;
+}
+.node-type-newsletter-weekly .field-name-field-event1-chair .field-label,
+.node-type-newsletter-weekly .field-name-field-event1-speakers .field-label,
+.node-type-newsletter-weekly .field-name-field-event1-venue .field-label {
+  font-weight: bold;
+  font-size: 16px;
+  font-family: <?php print $fontStack; ?>;
+  color: #666666;
+  line-height: 1.5;
+  margin: 15px 0 5px 0;
+}
+.node-type-newsletter-weekly .field-name-field-event1-speakers .field-items,
+.node-type-newsletter-weekly .field-name-field-event1-venue .field-items {
+  font-size: 16px;
+  font-family: <?php print $fontStack; ?>;
+  color: #666666;
+  line-height: 1.5;
+}
+.node-type-newsletter-weekly .field-name-field-event1-chair,
+.node-type-newsletter-weekly .field-name-field-event1-speakers,
+.node-type-newsletter-weekly .field-name-field-event1-venue {
+  font-size: 16px;
+  font-family: <?php print $fontStack; ?>;
+  color: #666666;
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+}
+.node-type-newsletter-weekly .field-name-field-event1-chair span,
+.node-type-newsletter-weekly .field-name-field-event1-speakers span,
+.node-type-newsletter-weekly .field-name-field-event1-venue span {
+  font-size: 16px;
+  font-family: <?php print $fontStack; ?>;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.field-name-field-publications .field-name-title h2 a {
+  display: block;
+  font-size: 24px;
+  font-family: <?php print $fontStack; ?>;
+  line-height: 1.5;
+  color: #000000;
+}
+
+.field-name-colored-element {
+
+}

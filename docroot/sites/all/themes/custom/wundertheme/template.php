@@ -412,12 +412,12 @@ function wundertheme_contextual_links_view_alter(&$element, &$items) {
 }
 function wundertheme_textfield($variables) {
   $element = $variables['element'];
-  if ($element['#attributes']['type'] !== 'search') {
-    $element['#attributes']['type'] = 'text';
-  }
-  else {
-    $element['#size'] = 15;
-  }
+//  if ($element['#attributes']['type'] !== 'search') {
+//    $element['#attributes']['type'] = 'text';
+//  }
+//  else {
+//    $element['#size'] = 15;
+//  }
   element_set_attributes($element, array('id', 'name', 'value', 'size', 'maxlength'));
   _form_set_class($element, array('form-text'));
   $extra = '';
@@ -507,9 +507,9 @@ function wundertheme_date_display_range($variables) {
  */
 function wundertheme_link($vars) {
   if ($vars['path'] === '<front>' && isset($vars['options']['fragment'])) {
-    if ($vars['options']['attributes']['class'][0] === 'active') {
-      array_shift($vars['options']['attributes']['class']);
-    }
+  //  if ($vars['options']['attributes']['class'][0] === 'active') {
+  //    array_shift($vars['options']['attributes']['class']);
+  //  }
   }
   $link = '<a href="' . check_plain(url($vars['path'], $vars['options'])) . '"' . drupal_attributes($vars['options']['attributes']) . '>';
   $link .= ($vars['options']['html'] ? $vars['text'] : check_plain($vars['text']));

@@ -106,7 +106,8 @@ function wk_general_taxonomy_term_contributors($field) {
   $profile_nodes = node_load_multiple($profile_nids);
   $rendered_profiles = node_view_multiple($profile_nodes, $formatter_view_mode);
 
-  return render($rendered_profiles);
+//  return render($rendered_profiles);
+    return;
 }
 //render the publication date and all the authors.
 function wk_all_publication_date_authors($field) {

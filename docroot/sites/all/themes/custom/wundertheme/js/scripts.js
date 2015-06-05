@@ -52,7 +52,7 @@ var xid = group.find('.field-name-field-event1-id').text();
 
 
 
-if (curr_date < event_date) {
+if (curr_date <= event_date) {
    var butt = '<a class="link-button arrow" href="/civicrm/event/register?id=' + xid + '&reset=1">' + Drupal.t('Register') + '</a>';
 }
 else {
