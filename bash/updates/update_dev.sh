@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ../../docroot
+cd /var/www/customprojects/ceps/dev/docroot
 
 #D7
 
