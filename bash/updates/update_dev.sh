@@ -54,5 +54,5 @@ drush vset --yes --always-set page_compression 0
 drush vset --yes --always-set error_level 2
 
 #Run tests
-drush en simpletest -y
-drush test-run GLUE
+#drush en simpletest -y
+#drush test-run GLUE
