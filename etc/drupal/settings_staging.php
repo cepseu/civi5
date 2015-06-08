@@ -1,7 +1,7 @@
 <?php
       $db_name = 'ceps_staging';
       $db_user = 'ceps';
-      $db_pass = 'ceps794658';
+      $db_pass = 'tralala07';
       $db_host = 'db01.dropsolid.com';
       $db_port = '3306';
       $db_driver = 'mysql';
