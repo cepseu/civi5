@@ -77,7 +77,7 @@ define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:tralala07@db01.dropsolid.com/
  *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
  *
  */
-define( 'CIVICRM_DSN'          , 'mysql://ceps_staging:ceps794658@db01.dropsolid.com/db_civi_ceps?new_link=true' );
+define( 'CIVICRM_DSN'          , 'mysql://ceps_staging:tralala07@db01.dropsolid.com/db_civi_ceps?new_link=true' );
 
 /**
  * CiviCRM Logging Database

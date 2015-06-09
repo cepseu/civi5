@@ -57,7 +57,7 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  * Datasource (DSN) format:
  *      define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
  */
-define( 'CIVICRM_UF_DSN'           , 'mysql://ceps_dev:ceps794658@db01.dropsolid.com/ceps_dev?new_link=true' );
+define( 'CIVICRM_UF_DSN'           , 'mysql://ceps_dev:tralala07@db01.dropsolid.com/ceps_dev?new_link=true' );
 /**
  * CiviCRM Database Settings
  *
