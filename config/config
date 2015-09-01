@@ -66,3 +66,5 @@ vhost:92.243.15.236 /var/www/customprojects/ceps/testbot1
 
 #services
 redmine:to fill in
+
+solractive:1
