@@ -114,9 +114,13 @@ function ceps_search_views_default_views() {
   $handler->display->display_options['filters']['type_1']['table'] = 'search_api_index_solr_node_index';
   $handler->display->display_options['filters']['type_1']['field'] = 'type';
   $handler->display->display_options['filters']['type_1']['value'] = array(
+    'publication' => 'publication',
     'article' => 'article',
+    'author' => 'author',
     'blog_post' => 'blog_post',
     'events' => 'events',
+    'book' => 'book',
+    'quote' => 'quote',
   );
   $handler->display->display_options['filters']['type_1']['group'] = 1;
 

@@ -68,6 +68,7 @@ function ceps_search_default_search_api_index() {
           "settings" : {
             "default" : "0",
             "bundles" : {
+              "publication" : "publication",
               "author" : "author",
               "blog_post" : "blog_post",
               "events" : "events",
