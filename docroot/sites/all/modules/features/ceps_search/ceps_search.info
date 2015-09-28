@@ -1,5 +1,5 @@
 name = Search functionality
-description = UNUSED FEATURE 
+description = UNUSED FEATURE
 core = 7.x
 package = CEPS
 php = 5.2.4
@@ -20,5 +20,5 @@ features[search_api_index][] = solr_node_index
 features[search_api_server][] = solr_search_service
 features[views_view][] = solr_search
 features_exclude[dependencies][views_content] = views_content
-mtime = 1430992914
+mtime = 1443443317
 project path = sites/all/modules/features
