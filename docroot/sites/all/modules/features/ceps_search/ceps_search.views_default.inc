@@ -81,7 +81,13 @@ function ceps_search_views_default_views() {
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'search_api_index_solr_node_index';
   $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array();
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'author' => 'author',
+    'blog_post' => 'blog_post',
+    'events' => 'events',
+    'book' => 'book',
+    'quote' => 'quote',
+  );
   $handler->display->display_options['filters']['type']['group'] = 1;
   $handler->display->display_options['filters']['type']['exposed'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
@@ -102,11 +108,16 @@ function ceps_search_views_default_views() {
     15 => 0,
     10 => 0,
   );
-  $handler->display->display_options['filters']['type']['expose']['reduce'] = 0;
+  $handler->display->display_options['filters']['type']['expose']['reduce'] = 1;
   /* Filter criterion: Indexed Node: Content type */
   $handler->display->display_options['filters']['type_1']['id'] = 'type_1';
   $handler->display->display_options['filters']['type_1']['table'] = 'search_api_index_solr_node_index';
   $handler->display->display_options['filters']['type_1']['field'] = 'type';
+  $handler->display->display_options['filters']['type_1']['value'] = array(
+    'article' => 'article',
+    'blog_post' => 'blog_post',
+    'events' => 'events',
+  );
   $handler->display->display_options['filters']['type_1']['group'] = 1;
 
   /* Display: Advanced search page */

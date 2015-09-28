@@ -7,10 +7,12 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function ceps_search_ctools_plugin_api($module = NULL, $api = NULL) {
+function ceps_search_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
   if ($module == "page_manager" && $api == "pages_default") {
     return array("version" => "1");
   }
+  list($module, $api) = func_get_args();
   if ($module == "pm_existing_pages" && $api == "pm_existing_pages") {
     return array("version" => "1");
   }
@@ -19,8 +21,8 @@ function ceps_search_ctools_plugin_api($module = NULL, $api = NULL) {
 /**
  * Implements hook_views_api().
  */
-function ceps_search_views_api($module = NULL, $api = NULL) {
-  return array("api" => "3.0");
+function ceps_search_views_api() {
+  return array("version" => "3.0");
 }
 
 /**
@@ -32,40 +34,53 @@ function ceps_search_default_search_api_index() {
     "name" : "SOLR Node Index",
     "machine_name" : "solr_node_index",
     "description" : null,
-    "server" : "solr_search_service ",
+    "server" : "solr_search_service",
     "item_type" : "node",
     "options" : {
+      "datasource" : { "bundles" : [] },
       "index_directly" : 1,
       "cron_limit" : "50",
       "fields" : {
-        "author" : { "type" : "integer", "entity_type" : "user" },
         "changed" : { "type" : "date" },
         "created" : { "type" : "date" },
+        "field_book_authors" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
+        "field_book_authors:title" : { "type" : "list\\u003Cstring\\u003E" },
+        "field_book_publication_date" : { "type" : "date" },
         "language" : { "type" : "string" },
         "nid" : { "type" : "integer" },
         "promote" : { "type" : "boolean" },
         "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
         "search_api_language" : { "type" : "string" },
+        "search_api_url" : { "type" : "uri" },
         "search_api_viewed" : { "type" : "text" },
-        "source" : { "type" : "integer", "entity_type" : "node" },
         "status" : { "type" : "boolean" },
-        "sticky" : { "type" : "boolean" },
-        "title" : { "type" : "text" },
+        "taxonomy_vocabulary_3" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "taxonomy_vocabulary_5" : { "type" : "integer", "entity_type" : "taxonomy_term" },
+        "title" : { "type" : "text", "boost" : "3.0" },
         "type" : { "type" : "string" },
         "url" : { "type" : "uri" },
         "vid" : { "type" : "integer" }
       },
       "data_alter_callbacks" : {
         "search_api_alter_bundle_filter" : {
-          "status" : 0,
+          "status" : 1,
           "weight" : "-10",
-          "settings" : { "default" : "1", "bundles" : [] }
+          "settings" : {
+            "default" : "0",
+            "bundles" : {
+              "author" : "author",
+              "blog_post" : "blog_post",
+              "events" : "events",
+              "book" : "book",
+              "quote" : "quote"
+            }
+          }
         },
         "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
-        "search_api_alter_node_status" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_node_status" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
         "search_api_alter_add_viewed_entity" : { "status" : 1, "weight" : "0", "settings" : { "mode" : "full" } },
-        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_add_url" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] }
       },
       "processors" : {
@@ -103,7 +118,7 @@ function ceps_search_default_search_api_index() {
           }
         },
         "search_api_highlighting" : {
-          "status" : 0,
+          "status" : 1,
           "weight" : "35",
           "settings" : {
             "prefix" : "\\u003Cstrong\\u003E",
@@ -114,8 +129,7 @@ function ceps_search_default_search_api_index() {
             "highlight" : "always"
           }
         }
-      },
-      "additional fields" : { "field_interecon_art_body" : "field_interecon_art_body" }
+      }
     },
     "enabled" : "1",
     "read_only" : "0"
@@ -139,7 +153,7 @@ function ceps_search_default_search_api_server() {
       "scheme" : "http",
       "host" : "127.0.0.1",
       "port" : "8983",
-      "path" : "\\/solr/ceps",
+      "path" : "\\/solr\\/ceps",
       "http_user" : "",
       "http_pass" : "",
       "excerpt" : 1,
@@ -147,7 +161,9 @@ function ceps_search_default_search_api_server() {
       "highlight_data" : 0,
       "skip_schema_check" : 0,
       "solr_version" : "3",
-      "http_method" : "AUTO"
+      "http_method" : "AUTO",
+      "autocorrect_spell" : 1,
+      "autocorrect_suggest_words" : 1
     },
     "enabled" : "1"
   }');
