@@ -4869,3 +4869,133 @@ ol.search-results li h3 {
 #mc_embed_signup .description {
   margin-bottom: 1em;
 }
+
+/**
+ * XPress code
+ */
+
+.front-special a.wrap-link {
+	position: relarive;
+	height: 250px !important;
+}
+.front-special .group-special-info {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: rgba(0, 0, 0, .60);
+	display: block;
+	z-index: 9;
+	padding: 0;
+}
+.front-special .field-name-title {
+	position: relative !important;
+	margin: 10px 20px 10px 65px !important;
+	display: block !important;
+}
+.front-special .field-name-title h2 {
+	width: 100%;
+	max-height: 55px;
+	min-height: 55px;
+   	overflow: hidden;
+    margin: 0 !important;
+	-webkit-transition: all 1s ease;
+	   -moz-transition: all 1s ease;
+		    transition: all 1s ease;
+	display: block !important;
+	font-size: 19px !important;    
+}
+.front-special .field-name-topic-box-color {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+.front-special .topic-box-color {
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	display: block;
+}
+	
+@media screen and (min-width: 1000px) {
+	.front-special .group-special-info {
+		padding-bottom: 5px;
+	}
+	.front-special a.wrap-link {
+		-webkit-transition: all .5s ease;
+	   	   -moz-transition: all .5s ease;
+		        transition: all .5s ease;
+	}
+	.front-special .group-special-info {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		background-color: rgba(0, 0, 0, .60);
+		display: block;
+		z-index: 9;
+	}
+	.front-special .topic-box-color {
+		position: absolute !important;
+		top: 0 !important;
+		left: 0 !important;
+		margin: 0 !important;
+	}
+	.front-special .field-name-field-publication-top-image {
+		z-index: 1;
+	}
+	.front-special .field-name-title {
+		position: relative !important;
+		margin: 0 10px 0 65px !important;
+		display: block !important;
+	}
+	.front-special .views-row-1 .field-name-title {
+		margin: 0 90px 0 90px !important;
+	}
+	.front-special .field-name-title h2 {
+		width: 100%;
+		max-height: 55px;
+		min-height: 55px;
+    	overflow: hidden;
+	    margin: 5px 0 0 0 !important;
+		-webkit-transition: all 1s ease;
+		   -moz-transition: all 1s ease;
+			    transition: all 1s ease;
+		display: block !important;	    
+		font-size: 19px !important;    
+	}
+	.front-special .views-row-1 .field-name-title h2 {
+	    margin-top: 10px !important;
+    	margin-bottom: 10px !important;
+		font-size: 23px !important;
+		line-height: 27px !important;
+		max-height: 60px;
+		min-height: 60px;
+	}
+	.front-special .views-row-1 .field-type-date {
+		margin: 0 85px 15px 90px !important;
+		font-size: 18px !important;
+	}
+}	
+.front-special .field-type-date:before {
+	margin: 0 !important;
+}    
+.front-special .field-type-date {
+	position: relative !important;
+	top: auto !important;
+	left: auto !important;
+	margin: 0 10px 10px 65px !important;
+	display: block !important;
+	font-size: 16px !important;
+}
+.front-special a.wrap-link:hover .field-name-title h2 {
+	max-height: 250px !important;
+	min-height: 55px !important;
+	-webkit-transition: all 1s ease;
+	   -moz-transition: all 1s ease;
+		    transition: all 1s ease;
+}
+.front-special .views-row-1  a.wrap-link:hover .field-name-title h2 {
+	min-height: 55px !important;
+}
