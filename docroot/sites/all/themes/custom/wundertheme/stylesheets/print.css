@@ -387,6 +387,13 @@ table {
 nav.tabs {
   margin: 12px 0;
 }
+/**
+ * xpress
+ */
+nav.tabs {
+  display: none;
+  visibility: hidden;
+}
 .pane-page-tabs .tabs,
 nav.tabs .tabs {
   list-style: none;
@@ -1662,11 +1669,14 @@ header .block-menu-block .menu a.active, header .block-menu-block .menu a:hover 
   }
 }
 
+header {
+	border: 1px solid red;
+}
 .logo {
   float: left;
 }
 .logo img {
-  width: 100px;
+  width: 70px;
 }
 
 .site-name {
@@ -4690,4 +4700,16 @@ header .block-menu-block .menu {
 
 .page-node.node-type-events .panel-simple-stacked .panel-col-bottom {
   display: block;
+}
+
+header .block-menu-block .menu {
+	border: 1px solid red;
+	display: block;
+}
+header .block-menu-block .menu li {
+	display: inline-block;
+	vertical-align: top;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: 1px solid red;
 }
