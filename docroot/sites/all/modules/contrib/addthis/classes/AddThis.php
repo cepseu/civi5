@@ -58,7 +58,7 @@ class AddThis {
   const DEFAULT_BOOKMARK_URL = 'http://www.addthis.com/bookmark.php?v=300';
   const DEFAULT_SERVICES_CSS_URL = 'http://cache.addthiscdn.com/icons/v1/sprites/services.css';
   const DEFAULT_SERVICES_JSON_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.json';
-  const DEFAULT_WIDGET_JS_URL = 'http://s7.addthis.com/js/300/addthis_widget.js';
+  const DEFAULT_WIDGET_JS_URL = 'https://s7.addthis.com/js/300/addthis_widget.js';
   const DEFAULT_WIDGET_JS_LOAD_TYPE = 'async';
 
   // Internal resources.

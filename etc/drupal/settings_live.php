@@ -185,7 +185,11 @@ $databases['default']['default']['prefix']= array(
       $update_free_access = FALSE;
       $drupal_hash_salt = 'Wuc3CPLHTfTHGXLIzmW7Hn8iS-ErWaJlJOL2nhed2xI';
 
-      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
+//      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
+
+//     Force ssl responses
+      $_SERVER['HTTPS'] = 'on';
+
       ini_set('session.gc_probability', 1);
       ini_set('session.gc_divisor', 100);
       ini_set('session.gc_maxlifetime', 200000);
