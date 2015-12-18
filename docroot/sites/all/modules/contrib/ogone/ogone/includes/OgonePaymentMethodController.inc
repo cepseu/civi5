@@ -507,7 +507,7 @@ class OgonePaymentMethodController extends PaymentMethodController {
     foreach (array_values($payment->line_items) as $i => $line_item) {
       $i++;
       $data['ITEMID' . $i] = $payment->pid . 'X' . $i;
-      $data['ITEMNAME' . $i] = t($line_item->description, $line_item->description_arguments);
+      $data['ITEMNAME' . $i] =  substr(t($line_item->description, $line_item->description_arguments),0,35);
       $data['ITEMPRICE' . $i] = $line_item->unitAmount(TRUE);
       $data['ITEMQUANT' . $i] = $line_item->quantity;
     }

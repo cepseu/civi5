@@ -178,6 +178,7 @@ function ogone_payment_method_configuration_form_elements_validate(array $elemen
  */
 function ogone_form_redirect(array $form, array &$form_state, Payment $payment) {
   $form['#action'] = $payment->method->controller->serverURL($payment->method->controller_data['server']);
+
   foreach ($payment->method->controller->redirectData($payment) as $parameter => $value) {
     $form[$parameter] = array(
       '#type' => 'hidden',
@@ -198,8 +199,9 @@ function ogone_form_redirect(array $form, array &$form_state, Payment $payment) 
     '#value' => t('Continue'),
   );
 
+//watchdog('ogone_form', 'Ogone payment Form data: !data', array('!data' => '<pre>' . check_plain(print_r($form, TRUE)) . '</pre>'), WATCHDOG_NOTICE);
 
-watchdog('ogone_form', 'Ogone payment Form data: !data', array('!data' => '<pre>' . check_plain(print_r($form, TRUE)) . '</pre>'), WATCHDOG_NOTICE);
+//watchdog('ogone_form', 'Ogone Payment data: !data', array('!data' => '<pre>' . check_plain(print_r($payment, TRUE)) . '</pre>'), WATCHDOG_NOTICE);
 
   return $form;
 }
