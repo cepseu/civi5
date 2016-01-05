@@ -1,0 +1,71 @@
+<VirtualHost *:8080>
+	ServerAdmin infra@dropsolid.com
+	ServerName ceps.be
+	ServerAlias www.ceps.be
+	# Rewrite to ceps.eu
+        RewriteEngine On
+        RewriteCond %{HTTP_HOST} ^ceps.be [OR]
+        RewriteCond %{HTTP_HOST} ^www.ceps.be
+        RewriteRule ^/?(.*) http://www.ceps.eu/$1 [R=301,L]
+</VirtualHost>
+
+
+<VirtualHost *:8080>
+
+	ServerAdmin infra@dropsolid.com
+	ServerName www.ceps.eu
+	ServerAlias 185.26.125.173 www.ceps.eu ceps.eu
+
+
+        DocumentRoot /var/www/www.ceps.eu/docroot
+
+        <Directory />
+                Options FollowSymLinks MultiViews
+                AllowOverride All
+		Require all granted
+        </Directory>
+
+        Alias  /stat /var/www/webalizer
+        <Location  /stat/>
+                Options Indexes
+                DirectoryIndex index.html index.php
+        </Location>
+
+
+        ErrorLog /var/log/apache2/www.ceps.eu-error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+
+        LogLevel error
+
+	# Tweak logs to enable apache to get the client ip's from Varnish log
+        # Otherwise all connections will seem to come from localhost
+        RemoteIPHeader X-Forwarded-For
+        LogFormat "%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" varnishcombined
+	CustomLog /var/log/apache2/www.ceps.eu-access.log varnishcombined
+
+  <IfModule mpm_itk_module>
+    AssignUserId ceps ceps
+  </IfModule>
+
+
+  <Directory /var/www/www.ceps.eu/docroot/sites/default/files/civicrm/upload>
+    AllowOverride All
+  </Directory>
+
+  <Directory /var/www/www.ceps.eu/docroot/sites/default/files/civicrm/custom>
+    AllowOverride All
+  </Directory>
+
+  <Directory /var/www/www.ceps.eu/docroot/sites/default/files/civicrm/ConfigAndLog>
+    AllowOverride All
+  </Directory>
+
+  # PDF display in browser http error 416 in chrome fix 
+  Header set Accept-Ranges none
+
+
+
+</VirtualHost>
+

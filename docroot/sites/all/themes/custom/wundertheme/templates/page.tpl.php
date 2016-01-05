@@ -145,6 +145,9 @@
 --> 
 	<footer role="contentinfo">
 		<div class="container">
+<!-- Piwik Image Tracker-->
+<img src="http://analytics.ceps.be/piwik.php?idsite=2&rec=1" style="border:0" alt="" />
+<!-- End Piwik -->
 			<?php print render($page['footer-top']); ?>
 			<div class="footer-first-last clearfix">
 				<?php print render($page['footer-first']); ?>

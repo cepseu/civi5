@@ -3,9 +3,9 @@
 require_once 'CRM/Core/Page.php';
 
 class CRM_Civisualize_Page_Main extends CRM_Core_Page {
-  function run() {
-    $dummy = NULL;
-    $request = CRM_Utils_Request::retrieve( 'q', 'String',$dummy, true, NULL, 'GET');
+
+  function getTemplateFileName () {
+    $request = CRM_Utils_System::currentPath();
     if (false !== strpos($request, '..')) {
       die ("SECURITY FATAL: the url can't contain '..'. Please report the issue on the forum at civicrm.org");
     }
@@ -16,7 +16,8 @@ class CRM_Civisualize_Page_Main extends CRM_Core_Page {
     $smarty->assign("options",array());
     if (CRM_Utils_Array::value(2, $request)) {
       $tplfile = _civicrm_api_get_camel_name($request[2]);
-      $tpl = 'dataviz/'.$tplfile.'.tpl';
+      $tplfile = explode('?', $tplfile);
+      $tpl = 'dataviz/'.$tplfile[0].'.tpl';
     }
     if (CRM_Utils_Array::value(3, $request)) {
       $r3 = _civicrm_api_get_camel_name($request[3]);
@@ -29,6 +30,13 @@ class CRM_Civisualize_Page_Main extends CRM_Core_Page {
       header("Status: 404 Not Found");
       die ("Can't find the requested template file templates/$tpl");
     }
+    return $tpl;
+  }
+
+  function run() {
+    $smarty= CRM_Core_Smarty::singleton( );
+
+    $dummy = NULL;
     if (array_key_exists('id',$_GET)) {// special treatmenent, because it's often used
       $smarty->assign ('id',(int)$_GET['id']);// an id is always positive
     }
@@ -58,27 +66,6 @@ class CRM_Civisualize_Page_Main extends CRM_Core_Page {
     require_once 'CRM/Core/Smarty/plugins/function.crmTitle.php';
     $smarty->register_function("crmTitle", "smarty_function_crmTitle");
 
-    if  ( ! array_key_exists ( 'HTTP_X_REQUESTED_WITH', $_SERVER ) ||
-      $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest"  )  {
-
-        $smarty->assign( 'tplFile', $tpl );
-
-        
-        $config = CRM_Core_Config::singleton();
-        $content = $smarty->fetch( 'CRM/common/'. strtolower($config->userFramework) .'.tpl' );
-
-        if (!defined('CIVICRM_UF_HEAD') && $region = CRM_Core_Region::instance('html-header', FALSE)) {
-          CRM_Utils_System::addHTMLHead($region->render(''));
-        }
-        CRM_Utils_System::appendTPLFile( $tpl, $content );
-
-        return CRM_Utils_System::theme($content);
-
-      } else {
-        $content = "<!-- .tpl file embeded: $tpl -->\n";
-        CRM_Utils_System::appendTPLFile( $tpl, $content );
-        echo $content . $smarty->fetch ($tpl);
-        CRM_Utils_System::civiExit( );
-    }
+    return parent::run();
   }
 }

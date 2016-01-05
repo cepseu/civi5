@@ -95,6 +95,7 @@
     //console.log({$id});
 
     var eventDetails        = {crmSQL json="eventdetails" eventid=$id set="event"};
+    
     var participantDetails  = {crmSQL json="eventparticipants" eventid=$id};
 
     {crmTitle array=$event field="title"}
@@ -104,11 +105,23 @@
     var i = {crmAPI entity="OptionValue" option_group_id="14"};
     var s = {crmAPI entity='ParticipantStatusType' option_sort="is_counted desc"};
 
+    var gender = {crmAPI entity="contact" action="getoptions" field="gender_id"};
+
     {literal}
 
         if((!eventDetails.is_error)&&(!participantDetails.is_error)){
 
+            var genderLabel = {};
+
+            gender.values.forEach(function(d){
+                genderLabel[d.key]=d.value;
+            });
+
             eventDetails = eventDetails.values[0];
+
+            {/literal}
+                eventDetails['url'] = "{crmURL p='civicrm/event/info' q='id='}{$id}";
+            {literal}
 
             var statusLabel = {};
             var typeLabel   = {};
@@ -123,7 +136,7 @@
             i=null;
 
             cj('.eventDetails').html(
-                "<div class='detail'><div class='detailfield'>Name:</div><div class='detailvalue'>"+eventDetails.title+"</div></div>"
+                "<div class='detail'><div class='detailfield'>Name:</div><div class='detailvalue'><a href='"+eventDetails.url+"'>"+eventDetails.title+"</a></div></div>"
                 +"<div class='detail'><div class='detailfield'>Event Type:</div><div class='detailvalue'>"+typeLabel[eventDetails.event_type_id]+"</div></div>"
                 +"<div class='detail'><div class='detailfield'>Start Date:</div><div class='detailvalue'>"+eventDetails.start_date+"</div></div>"
                 +"<div class='detail'><div class='detailfield'>End Date:</div><div class='detailvalue'>"+eventDetails.end_date+"</div></div>"
@@ -136,7 +149,6 @@
             var registerdateFormat  = d3.time.format("%Y-%m-%d %H:%M:%S");
             var currentDate         = new Date();
 
-            var genderLabel={"1":"Male","2":"Female"};
 
             participantDetails.values.forEach(function(d){
                 d.bd = birthdateFormat.parse(d.birth_date);
@@ -237,6 +249,7 @@
                 dataTable
                     .dimension(date)
                     .group(function(d){ return ""; })
+                    .size(9999)
                     .columns(
                         [
                             function (d) {

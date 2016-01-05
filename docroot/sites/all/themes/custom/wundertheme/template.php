@@ -24,8 +24,9 @@ function wundertheme_form_views_exposed_form_alter(&$form, &$form_state){
 /**
  * Implements hook_css_alter().
  */
+
 function wundertheme_css_alter(&$css) {
-  /* Remove some default Drupal css */
+  // Remove some default Drupal css
   $exclude = array(
     'modules/aggregator/aggregator.css' => FALSE,
     'modules/block/block.css' => FALSE,
@@ -59,13 +60,14 @@ function wundertheme_css_alter(&$css) {
     'modules/user/user.css' => FALSE,
   );
   $css = array_diff_key($css, $exclude);
-  /* Get rid of some default panel css */
+  // Get rid of some default panel css 
   foreach ($css as $path => $meta) {
     if (strpos($path, 'threecol_33_34_33_stacked') !== FALSE || strpos($path, 'threecol_25_50_25_stacked') !== FALSE) {
       unset($css[$path]);
     }
   }
 }
+
 /**
  * Override or insert variables into the html template.
  *

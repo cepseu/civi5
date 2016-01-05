@@ -61,6 +61,13 @@ function ceps_custom_form_alter(&$form, $form_state, $form_id) {
 			$form['#action'] = '/search';
 		}
 	}
+
+	if ($form_id == 'book_node_form') {
+    		$form['field_downloaded']['#access'] = FALSE;
+		$form['field_book_old_path']['#access'] = FALSE;
+		$form['taxonomyextra']['#access'] = FALSE;
+		$form['taxonomy_catalog']['#access'] = FALSE;
+  	}
 }
 
 /**

@@ -57,7 +57,7 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  * Datasource (DSN) format:
  *      define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
  */
-define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:ceps794658@localhost/ceps_local?new_link=true' );
+define( 'CIVICRM_UF_DSN'           , 'mysql://u_dru_ceps:NyOn33dhUYvZEHeh@localhost/ceps_local?new_link=true' );
 /**
  * CiviCRM Database Settings
  *
@@ -77,7 +77,7 @@ define( 'CIVICRM_UF_DSN'           , 'mysql://ceps:ceps794658@localhost/ceps_loc
  *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
  *
  */
-define( 'CIVICRM_DSN'          , 'mysql://ceps:tralala07@localhost/ceps_civi_local?new_link=true' );
+define( 'CIVICRM_DSN'          , 'mysql://u_dru_ceps:NyOn33dhUYvZEHeh@localhost/db_civi_ceps?new_link=true' );
 
 /**
  * CiviCRM Logging Database
@@ -121,8 +121,8 @@ define('CIVICRM_LOGGING_DSN', CIVICRM_DSN);
 
 global $civicrm_root;
 
-$civicrm_root = '/home/jake/websites/customprojects/ceps.local/docroot/sites/all/modules/civicrm';
-define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/home/jake/websites/customprojects/ceps.local/docroot/sites/default/files/civicrm/templates_c/' );
+$civicrm_root = '/var/www/ceps.local/docroot/sites/all/modules/civicrm';
+define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/ceps.local/docroot/sites/default/files/civicrm/templates_c/' );
 
 /**
  * Site URLs:
@@ -318,3 +318,4 @@ if ($memLimit >= 0 and $memLimit < 67108864) {
 
 require_once 'CRM/Core/ClassLoader.php';
 CRM_Core_ClassLoader::singleton()->register();
+

@@ -1,32 +1,36 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | Mandrill Transactional Email extension			      |
+ | integrates CiviCRM's non-bulk email with the Mandrill service      |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright (C) 2012-2015 JMA Consulting                             |
  +--------------------------------------------------------------------+
- | This file is a part of CiviCRM.                                    |
+ | This program is free software: you can redistribute it and/or      | 
+ | modify  it under the terms of the GNU Affero General Public        |
+ | License as published by the Free Software Foundation, either       |
+ | version 3 of the   License, or (at your option) any later version. |
  |                                                                    |
- | CiviCRM is free software; you can copy, modify, and distribute it  |
- | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
- |                                                                    |
- | CiviCRM is distributed in the hope that it will be useful, but     |
- | WITHOUT ANY WARRANTY; without even the implied warranty of         |
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
- | See the GNU Affero General Public License for more details.        |
- |                                                                    |
+ | This program is distributed in the hope that it will be useful,    |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of     |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the      |
+ | GNU Affero General Public License for more details.                |
+ |                                                                    | 
  | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
- | at info[AT]civicrm[DOT]org. If you have questions about the        |
- | GNU Affero General Public License or the licensing of CiviCRM,     |
- | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
+ | License along with this program.  If not,                          |
+ | see <http://www.gnu.org/licenses/>.                                |
+ |                            					      |
+ | Support:https://github.com/JMAConsulting/biz.jmaconsulting.mte/issues      
+ |       						              |
+ | Contact: info@jmaconsulting.biz      			      |
+ |         JMA Consulting      					      |
+ |          215 Spadina Ave, Ste 400      			      |
+ |          Toronto, ON        	 				      |
+ |          Canada   M5T 2C7       				      |
  +--------------------------------------------------------------------+
 *}
 <div class="crm-block crm-form-block crm-smtp-form-block">
 <div id="help">
-
-
+There are two types of emails sent from CiviCRM: bulk emails sent through the CiviMail component, and transactional emails that covers everything else. The Mandrill Email extension can be used to send  email for either or both of these. Some other extensions only look after the delivery of CiviMail emails.
 </div>
 <div id="bySMTP" class="mailoption">
   <fieldset>
@@ -60,6 +64,12 @@
          <span class="description">{ts}If your SMTP server requires authentication, enter your Username and Password here.{/ts}</span>
          </td>
        </tr>
+       <tr class="crm-smtp-form-block-used_for">
+         <td class="label">{$form.used_for.label}</td>
+         <td>{$form.used_for.html}<br />
+         <span class="description">{ts}{/ts}</span>
+         </td>
+       </tr>
        <tr class="crm-smtp-form-block-enable">
          <td class="label">{$form.is_active.label}</td>
          <td>{$form.is_active.html}<br />
@@ -72,7 +82,7 @@
        <tr class="crm-smtp-form-block-notify_group">
          <td class="label">{$form.group_id.label}</td>
          <td>{$form.group_id.html}
-         </br><span class="description">{ts}Group to notify for hard and soft bounce.{/ts}</span>
+         </br><span class="description">{ts}Group to notify for hard and soft bounces.{/ts}</span>
          </td>
        </tr>
     </table>

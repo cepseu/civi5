@@ -15,26 +15,34 @@ function _civicrm_api3_contacts_correctnamecasesjob_spec(&$spec) {
 /**
  * This function will set any string that is:
  *  - all uppercase or
- *  - all lowercase and
+ *  - all lowercase or
+ *  - contains leading and/or trailing whitespace and
  *  - not empty
- * to be capitalised correcty with the first letter on upper case.
- * It is ment to clean contact names.
+ * to be trimmed and capitalised correctly with the first letter on upper case.
+ * It is meant to clean contact names.
  * Major credits to Xavier Dutoit (<civicrm@tttp.eu>) and the his extension
  * https://civicrm.org/extensions/normalise-data-entered-firstname-last-name .
  * @param string $aName - a string that should contain the name
  * @return boolean - True if the string got modified and false if it didn't
  */
-function contacts_correctnamecasesjob_correct_name_case(&$aName){
+function contacts_correctnamecasesjob_correct_name_case(&$aName) {
   // See if the name is empty.
-  if (strlen($aName) != 0){
+  if (strlen($aName) != 0) {
     // Check if the name needs correction.
-    if ($aName == strtolower($aName) || $aName == strtoupper($aName)){
-      // Correct the name by only setting the first letter to upper-case
+    if (
+      $aName == strtolower($aName) ||
+      ($aName == strtoupper($aName) && strlen($aName) > 1) ||
+      ($aName != trim($aName) && strlen(trim($aName)) > 0)
+    ) {
+      // Correct the name by only setting the first letter to upper-case,
+      // and trimming leading and trailing whitespace
+      $aName = trim($aName);
       $aName = strtoupper($aName[0]) . strtolower(substr($aName, 1));
       // Signal that a change was made
       return TRUE;
     }
   }
+
   // No change was made
   return FALSE;
 }
@@ -48,19 +56,19 @@ function contacts_correctnamecasesjob_correct_name_case(&$aName){
  * @see civicrm_api3_create_error
  * @throws API_Exception
  */
-function civicrm_api3_contacts_correctnamecasesjob($params) { 
-  
+function civicrm_api3_contacts_correctnamecasesjob($params) {
+
   $lastContactExaminedOffset = CRM_Core_BAO_Setting::getItem(CAPSCORRECT_EXTENSION_NAME, CAPSCORRECT_LAST_CONTACT_OFFSET);
   // See if the returned value is NULL or negative
   if ( $lastContactExaminedOffset === NULL || $lastContactExaminedOffset < 0 ) {
     throw new API_Exception(/*errorMessage*/ 'Unable to complete scheduled job, the offset was not returned.', /*errorCode*/ 1);
-  }  
+  }
   // Get the number of contacts to correct this run
   $numberOfContactsToRun = DEFAULT_DAILY_CONTACTS_CORRECTED;
   if (isset($params[SCHEDULED_JOB_PARAM_DEFAULT_NAME]) && is_numeric($params[SCHEDULED_JOB_PARAM_DEFAULT_NAME])){
     $numberOfContactsToRun = $params[SCHEDULED_JOB_PARAM_DEFAULT_NAME];
   }
-   
+
   // Retrieve all the contacts of type individual
   // from the stored offset, with the max number of rows
   $getContactsApiParams = array(
@@ -69,27 +77,28 @@ function civicrm_api3_contacts_correctnamecasesjob($params) {
     'contact_type' => 'Individual',
     'offset' => $lastContactExaminedOffset,
     'rowCount' => $numberOfContactsToRun,
-    'return' => 'first_name, last_name',
+    'return' => 'first_name, middle_name, last_name',
     'sort' => 'contact_id ASC',
   );
   $getContactsApiResults = civicrm_api('Contact', 'get', $getContactsApiParams);
   if ( civicrm_error($getContactsApiResults) ){
     throw new API_Exception(/*errorMessage*/ 'Unable to complete scheduled job, error fetching contacts.', /*errorCode*/ 2);
   }
-  
+
   $contactsCorrectedThisRun = 0;
   foreach( $getContactsApiResults['values'] as $aContact ){
     // Correct the names if needed
-    $isFirstNameCorrected = contacts_correctnamecasesjob_correct_name_case($aContact['first_name']);
-    $isLastNameCorrected  = contacts_correctnamecasesjob_correct_name_case($aContact['last_name']);
+    $isFirstNameCorrected  = contacts_correctnamecasesjob_correct_name_case($aContact['first_name']);
+    $isMiddleNameCorrected = contacts_correctnamecasesjob_correct_name_case($aContact['middle_name']);
+    $isLastNameCorrected   = contacts_correctnamecasesjob_correct_name_case($aContact['last_name']);
     // If at least one of the names is altered update the contact
-    if ( $isFirstNameCorrected || $isLastNameCorrected ) {
+    if ($isFirstNameCorrected || $isMiddleNameCorrected || $isLastNameCorrected) {
       $contactWithCorrectedNameApiParams = array(
-        'version' => 3,
-        'sequential' => 1,
-        'id' => $aContact['id'],
-        'first_name' => $aContact['first_name'],
-        'last_name' => $aContact['last_name'],
+        'version'     => 3,
+        'id'          => $aContact['id'],
+        'first_name'  => $aContact['first_name'],
+        'middle_name' => $aContact['middle_name'],
+        'last_name'   => $aContact['last_name'],
       );
       $contactWithCorrectedNameApiResults = civicrm_api('Contact', 'create', $contactWithCorrectedNameApiParams);
       // Update the contacts corrected counter
@@ -113,9 +122,8 @@ function civicrm_api3_contacts_correctnamecasesjob($params) {
                    . " The total number of contacts corrected in the last run is $contactsCorrectedThisRun",
     'Current offset' => $lastContactExaminedOffset,
     'Total contacts corrected' => $totalContactsCorrected,
-    'Contacts corrected this run' => $contactsCorrectedThisRun,      
+    'Contacts corrected this run' => $contactsCorrectedThisRun,
   );
-  
-  return civicrm_api3_create_success($apiReturnValues, $params, 'Contacts', 'CorrectNameCasesJob');  
-}
 
+  return civicrm_api3_create_success($apiReturnValues, $params, 'Contacts', 'CorrectNameCasesJob');
+}

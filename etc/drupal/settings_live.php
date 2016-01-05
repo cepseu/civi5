@@ -169,6 +169,7 @@ $databases['default']['default']['prefix']= array(
   'civicrm_value_company_info_4'             => '`db_civi_ceps`.',
   'civicrm_value_dietary_preferences_9'      => '`db_civi_ceps`.',
   'civicrm_value_event_info_5'               => '`db_civi_ceps`.',
+  'civicrm_value_il2016_16'                  => '`db_civi_ceps`.',
   'civicrm_value_individual_info_2'          => '`db_civi_ceps`.',
   'civicrm_value_neujobs_final_conference3_13' => '`db_civi_ceps`.',
   'civicrm_value_newsletters_15'             => '`db_civi_ceps`.',
@@ -181,11 +182,14 @@ $databases['default']['default']['prefix']= array(
   'civicrm_worldregion'                      => '`db_civi_ceps`.',
 );
 
-
       $update_free_access = FALSE;
       $drupal_hash_salt = 'Wuc3CPLHTfTHGXLIzmW7Hn8iS-ErWaJlJOL2nhed2xI';
 
-      $base_url = 'http://ceps.eu';  // NO trailing slash!
+//      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
+
+//     Force ssl responses
+      $_SERVER['HTTPS'] = 'on';
+
       ini_set('session.gc_probability', 1);
       ini_set('session.gc_divisor', 100);
       ini_set('session.gc_maxlifetime', 200000);

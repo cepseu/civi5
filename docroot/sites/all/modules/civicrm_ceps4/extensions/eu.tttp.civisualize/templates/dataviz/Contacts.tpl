@@ -1,16 +1,16 @@
 {crmTitle string="Contacts Overview"}
 
-<div class="dc_contacts">
+<div class="dc_contacts" id="dataviz-contacts">
 	<div id="datacount" style="margin-bottom:20px;">
 	    <h2><strong><span class="filter-count"></span></strong> contacts selected from a total of <strong><span id="total-count"></span></strong> records</h2>
 	</div>
-	<div class="clear"></div>
+	<div style="clear:both"></div>
 	<div id="type" style="width:350px;">
 	    <strong>Type</strong>
 	    <a class="reset" href="javascript:typePie.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 	    <div class="clearfix"></div>
 	</div>
-		<div id="source">
+		<div class="source">
 	    <strong>Source of Contact</strong>
 	    <a class="reset" href="javascript:sourceRow.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 	    <div class="clearfix"></div>
@@ -35,14 +35,22 @@
 </div>
 
 <script>
+(function(guid){ldelim}
 	'use strict';
 
 	var data = {crmSQL file="contacts"};
+	var gender = {crmAPI entity="contact" action="getoptions" field="gender_id"};
 
 	{literal}
+
 		if(!data.is_error){//Check for database error
 			var numberFormat = d3.format(".2f");
-			var genderLabel = {1:'Male',2:'Female'};
+			var genderLabel = {};
+
+			gender.values.forEach(function(d){
+				genderLabel[d.key]=d.value;
+			});
+
 			var dateFormat = d3.time.format("%Y-%m-%d");
 
 			var genderPie=null, typePie=null, sourceRow=null, monthLine=null, weekRow=null;
@@ -69,7 +77,7 @@
 
 				typePie 	= dc.pieChart("#type").innerRadius(10).radius(90);
 				genderPie 	= dc.pieChart('#gender').innerRadius(10).radius(90);
-				sourceRow 	= dc.rowChart('#source');
+				sourceRow 	= dc.rowChart(guid + '.source');
 				monthLine 	= dc.lineChart('#contacts-by-month');
 				weekRow 	= dc.rowChart('#dayofweek');
 
@@ -193,5 +201,6 @@
 			cj('.dc_contacts').html('<div style="color:red; font-size:18px;">There is a database error. Please Contact the administrator as soon as possible.</div>');
 		}
 	{/literal}
+{rdelim})("#dataviz-contacts ");
 </script>
 <div class="clear"></div>
