@@ -1,4 +1,31 @@
 <?php
+/**
+ * Mandrill Transactional Email extension integrates CiviCRM's non-bulk email 
+ * with the Mandrill service
+ * 
+ * Copyright (C) 2012-2015 JMA Consulting
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Support: https://github.com/JMAConsulting/biz.jmaconsulting.mte/issues
+ * 
+ * Contact: info@jmaconsulting.biz
+ *          JMA Consulting
+ *          215 Spadina Ave, Ste 400
+ *          Toronto, ON  
+ *          Canada   M5T 2C7
+ */
 
 require_once 'CRM/Core/Form.php';
 
@@ -11,8 +38,11 @@ class CRM_Mte_Form_MandrillSmtpSetting extends CRM_Admin_Form_Setting {
   
   protected $_testButtonName;
 
+  /**
+   * Build the form object.
+   */
   function buildQuickForm() {
-    CRM_Utils_System::setTitle(ts('Mandril Smtp Settings - Outbound Mail'));
+    CRM_Utils_System::setTitle(ts('Mandrill SMTP Settings - Outbound Mail'));
     $this->add('text', 'smtpServer', ts('SMTP Server'), NULL, TRUE);
     $this->add('text', 'smtpPort', ts('SMTP Port'), NULL, TRUE);
     $this->addYesNo('smtpAuth', ts('Authentication?'), NULL, TRUE);
@@ -23,6 +53,14 @@ class CRM_Mte_Form_MandrillSmtpSetting extends CRM_Admin_Form_Setting {
 
     $this->add('submit', $this->_testButtonName, ts('Save & Send Test Email'));
     $this->add('checkbox', 'is_active', ts('Enabled?'));
+    $options = array(
+      'Transactional Emails' => 1,
+      'CiviMail Bulk Mailings' => 2
+    );
+    $this->addCheckBox('used_for', ts('Used For?'), $options,
+      NULL, NULL, NULL, NULL,
+      array('&nbsp;&nbsp;', '&nbsp;&nbsp;', '<br/>') 
+    );
     
     $element = $this->add('text', 'mandril_post_url', ts('Mandrill Post to URL'));
     $element->freeze();
@@ -54,6 +92,9 @@ class CRM_Mte_Form_MandrillSmtpSetting extends CRM_Admin_Form_Setting {
     return empty($errors) ? TRUE : $errors;
   }
   
+  /**
+   * Process the form submission.
+   */
   function postProcess() {
     $formValues = $this->exportValues();
     $buttonName = $this->controller->getButtonName();
@@ -140,20 +181,11 @@ class CRM_Mte_Form_MandrillSmtpSetting extends CRM_Admin_Form_Setting {
         CRM_Core_Session::setStatus($testMailStatusMsg . ts('Oops. Your %1 settings are incorrect. No test mail has been sent.', array(1 => strtoupper($mailerName))) . $message, ts("Mail Not Sent"), "error");
       }
     }
-    
-    $mailingBackend = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
-      'mandrill_smtp_settings'
-    );
-    
-    if (!empty($mailingBackend)) {
-      CRM_Core_BAO_ConfigSetting::formatParams($formValues, $mailingBackend);
-    }
-    
+        
     // if password is present, encrypt it
     if (!empty($formValues['smtpPassword'])) {
       $formValues['smtpPassword'] = CRM_Utils_Crypt::encrypt($formValues['smtpPassword']);
     }
-
     CRM_Core_BAO_Setting::setItem($formValues,
       CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
       'mandrill_smtp_settings'

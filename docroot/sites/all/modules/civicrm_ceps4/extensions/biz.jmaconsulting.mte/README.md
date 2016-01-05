@@ -1,12 +1,12 @@
-biz.jmaconsulting.mte version 1.5 for CiviCRM 4.2, 4.3, 4.4, 4.5
-==============================================================
+biz.jmaconsulting.mte version 2.0 for CiviCRM 4.2, 4.3, 4.4, 4.5, 4.6
+=====================================================================
 
-Mandrill Transactional Emails
+Mandrill Emails Extension for CiviCRM
 
-See https://github.com/JMAConsulting/biz.jmaconsulting.mte/wiki/About-mte-%28Mandrill-Transactional-Emails%29
+See https://github.com/JMAConsulting/biz.jmaconsulting.mte/wiki/About-Mandrill-Emails-Extension-for-CiviCRM
 
-Installation instructions for Mandrill Transactional Emails
-===========================================================
+Installation instructions for Mandrill Emails Extension
+=======================================================
 
 * Setup Mandrill
   * Register for or login to your Mandrill account at https://mandrillapp.com/login/
@@ -23,11 +23,11 @@ Installation instructions for Mandrill Transactional Emails
   * If you have not already done so, go to Administer >> System Settings >> Resource URLs
     * Beside Extension Resource URL, enter an appropriate values such as http://yourorg.org/sites/all/modules/Extensions/
   * Click Save.
-* Install Mandrill Transactional Emails extension
+* Install Mandrill Email extension
   * Go to Administer >> Customize Data and Screens >> Manage Extensions.
   * Click on Add tab.
-  * If you do not see Mandrill Transactional Emails in the list of extensions, download it and unzip it into the extensions direction setup above, then return to this page.
-  * Beside Mandrill Transactional Emails, click Download.
+  * If you do not see Mandrill Emails in the list of extensions, download it and unzip it into the extensions direction setup above, then return to this page.
+  * Beside Mandrill Emails, click Download.
   * Review the information, then click Download and Install.
 * Setup From Email address
   * If you have not already done so, go to:
@@ -41,6 +41,9 @@ Installation instructions for Mandrill Transactional Emails
     * Authentication: Yes
     * SMTP Username: (from first step above, e.g. mail@yourorg.org)
     * SMTP Password: (copy and paste API Key from first step above, e.g. 12345678-abcd-1234-efgh-123456789012)
+    * Choose one or both of Transactional Emails and/or CiviCRM Bulk Mailings
+    * Ensure Enabled? is enabled
+    * Optional (not recommended): if you want a group of contacts to receive emails when a hard or soft bounce is received, select it as the Group to notify.
   * Click Save & Send Test Email
   * Note the value of the field Mandrill Post URL, for example by copying and pasting it into a file for use later in this setup.
   * Check that you received the test email.
@@ -70,13 +73,14 @@ Installation instructions for Mandrill Transactional Emails
 Disable Instructions
 ====================
 Disabling the extension turns off its functionality but does not remove the software, and the database tables and data created by the extension.
-* Go to Administer >> Customize Data and Screens >> Manage Extensions.
-* Beside Mandrill Transactional Emails on the Extensions tab, click Disable.
+* Go to Administer >> System Settings >> Manage Extensions (or for CiviCRM versions <=4.4, Administer >> Customize Data and Screens >> Manage Extensions).
+* Beside Mandrill Emails on the Extensions tab, click Disable.
 * On the confirmation page, click Disable.
 
-Uninstall Instructions
+Disable and Uninstall Instructions
 ======================
 Uninstalling the extension removes the changes it made to your database and the data that was inserted into your database to track emails sent via the extension to Mandrill. 
 * Disable the extension following the instructions above.
-* On the Administer >> Customize Data and Screens >> Manage Extensions page, Extensions tab, beside Mandrill Transactional Emails extension, click Uninstall.
-* On the confirmation page, click Uninstall.
+* On the Administer >> System Settings >> Manage Extensions (or for CiviCRM versions <=4.4, Administer >> Customize Data and Screens >> Manage Extensions), Extensions tab, beside Mandrill Emails extension, click Disable, and on the confirmation page, click Disable. This removes the functionality from the UI and stops email from being delivered via Mandrill, and for any callbacks from Mandrill for previously sent mail to be recorded.
+* To continue to send mail from CiviCRM that was previously sent via Mandrill Emails, ensure that your settings are correct at Administer >> System Settings > Outbound Email (SMTP/Sendmail).
+* If desired, on the Extensions tab beside Mandrill Emails, click Uninstall. This destroys database tables created by the Mandrill Emails extension when it was installed, and removes the software for the extension from the server.

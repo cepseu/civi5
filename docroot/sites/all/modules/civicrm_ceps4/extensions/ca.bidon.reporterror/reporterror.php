@@ -154,8 +154,10 @@ function reporterror_civicrm_navigationMenu(&$params) {
  *
  * @param $vars Array with the 'message' and 'code' of the error.
  */
-function reporterror_civicrm_handler($vars) {
+function reporterror_civicrm_handler($vars, $options_overrides = array()) {
   $sendreport = TRUE;
+  $generate_404 = FALSE;
+
   $redirect_path = NULL;
   $redirect_options = array();
 
@@ -170,9 +172,9 @@ function reporterror_civicrm_handler($vars) {
 
   // Redirect for Contribution pages without a referrer (close / restore browser page)
   if ($arg[0] == 'civicrm' && $arg[1] == 'contribute' && $arg[2] == 'transact' && ! $_SERVER['HTTP_REFERER']) {
-    $handle = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'noreferer_handle');
-    $pageid = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'noreferer_pageid');
-    $sendreport = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'noreferer_sendreport', NULL, 1);
+    $handle = reporterror_setting_get('noreferer_handle', $options_overrides);
+    $pageid = reporterror_setting_get('noreferer_pageid', $options_overrides);
+    $sendreport = reporterror_setting_get('noreferer_sendreport', $options_overrides, 1);
 
     if ($handle == 1 || ($handle == 2 && ! $pageid)) {
       $redirect_path = CRM_Utils_System::baseCMSURL();
@@ -182,6 +184,26 @@ function reporterror_civicrm_handler($vars) {
     }
   }
 
+  // Identify and possibly ignore bots
+  $is_bot = FALSE;
+  $bots_regexp = reporterror_setting_get('bots_regexp', $options_overrides);
+
+  if ($bots_regexp && preg_match('/' . $bots_regexp . '/', $_SERVER['HTTP_USER_AGENT'])) {
+    $is_bot = TRUE;
+
+    $bots_sendreport = reporterror_setting_get('bots_sendreport', $options_overrides);
+    $bots_404 = reporterror_setting_get('bots_404', $options_overrides);
+
+    if (! $bots_sendreport) {
+      $sendreport = FALSE;
+    }
+
+    if ($bots_404) {
+      $generate_404 = TRUE;
+    }
+
+  }
+
   // Send email report
   if ($sendreport) {
     $domain = CRM_Core_BAO_Domain::getDomain();
@@ -189,8 +211,18 @@ function reporterror_civicrm_handler($vars) {
 
     $len = REPORTERROR_CIVICRM_SUBJECT_LEN;
 
+    $extra_info = array();
+
     if ($redirect_path) {
-      $subject = ts('CiviCRM error [redirected] at %1', array(1 => $site_name, 'domain' => 'ca.bidon.reporterror'));
+      $extra_info[] = ts('redirected', array('domain' => 'ca.bidon.reporterror'));
+    }
+
+    if ($is_bot) {
+      $extra_info[] = ts('bot', array('domain' => 'ca.bidon.reporterror'));
+    }
+
+    if (count($extra_info)) {
+      $subject = ts('CiviCRM error [%2] at %1', array(1 => $site_name, 2 => implode(',', $extra_info), 'domain' => 'ca.bidon.reporterror'));
     }
     else {
       $subject = ts('CiviCRM error at %1', array(1 => $site_name, 'domain' => 'ca.bidon.reporterror'));
@@ -200,11 +232,11 @@ function reporterror_civicrm_handler($vars) {
       $subject .= ' (' . substr($vars['message'], 0, $len) . ')';
     }
 
-    $to = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'mailto');
+    $to = reporterror_setting_get('mailto', $options_overrides);
 
     if (!empty($to)) {
-      $destinations = explode(REPORTERROR_SETTINGS_GROUP, $to);
-      $output = reporterror_civicrm_generatereport($site_name, $vars, $redirect_path);
+      $destinations = explode(REPORTERROR_EMAIL_SEPARATOR, $to);
+      $output = reporterror_civicrm_generatereport($site_name, $vars, $redirect_path, $options_overrides);
 
       foreach ($destinations as $dest) {
         $dest = trim($dest);
@@ -213,6 +245,39 @@ function reporterror_civicrm_handler($vars) {
     }
     else {
       CRM_Core_Error::debug_log_message('Report Error Extension could not send since no email address was set.');
+    }
+  }
+
+  if ($generate_404) {
+    $config = CRM_Core_Config::singleton();
+
+    switch ($config->userFramework) {
+      case 'Drupal':
+      case 'Drupal6':
+        drupal_not_found();
+        drupal_exit();
+        break;
+
+      case 'Drupal8':
+        // TODO: not tested.
+        // use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+        // throw new NotFoundHttpException();
+        break;
+
+      case 'WordPress':
+        // TODO: not tested.
+        global $wp_query;
+        $wp_query->set_404();
+        status_header(404);
+        break;
+
+      case 'Joomla':
+        // TODO: not tested.
+        header("HTTP/1.0 404 Not Found");
+        break;
+
+      default:
+        header("HTTP/1.0 404 Not Found");
     }
   }
 
@@ -231,9 +296,10 @@ function reporterror_civicrm_handler($vars) {
 /**
  * Returns a plain text output for the e-mail report.
  */
-function reporterror_civicrm_generatereport($site_name, $vars, $redirect_path) {
-  $show_full_backtrace = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'show_full_backtrace');
-  $show_post_data = CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, 'show_post_data');
+function reporterror_civicrm_generatereport($site_name, $vars, $redirect_path, $options_overrides = array()) {
+  $show_full_backtrace = reporterror_setting_get('show_full_backtrace', $options_overrides);
+  $show_post_data = reporterror_setting_get('show_post_data', $options_overrides);
+  $show_session_data = reporterror_setting_get('show_session_data', $options_overrides);
 
   $output = ts('There was a CiviCRM error at %1.', array(1 => $site_name)) . "\n";
   $output .= ts('Date: %1', array(1 => date('c'))) . "\n\n";
@@ -244,14 +310,18 @@ function reporterror_civicrm_generatereport($site_name, $vars, $redirect_path) {
   }
 
   // Error details
+  $output .= "\n\n***ERROR***\n";
+  $output .= _reporterror_civicrm_parse_array($vars);
+
+  // The "last error" can sometimes help, but it can also mislead
+  // (ex: PHP notice during the error).
   if (function_exists('error_get_last')) {
-    $output .= "***ERROR***\n";
+    $output .= "***LAST ERROR***\n";
     $output .= print_r(error_get_last(), TRUE);
   }
 
-  $output .= print_r($vars, TRUE);
-
-  $output .= _reporterror_civicrm_get_session_info();
+  // User information and the session variable
+  $output .= _reporterror_civicrm_get_session_info($show_session_data);
 
   // Backtrace
   $output .= "\n\n***BACKTRACE***\n";
@@ -323,16 +393,26 @@ function reporterror_civicrm_send_mail($to, $subject, $output) {
 function _reporterror_civicrm_parse_array($array) {
   $output = '';
 
-  foreach ((array)$array as $key => $value) {
+  $array = (array) $array;
+
+  foreach ($array as $key => $value) {
     if (is_array($value) || is_object($value)) {
       $value = print_r($value, TRUE);
     }
 
-    $key = str_pad($key .':', 20, ' ');
-    $output .= $key . (string)_reporterror_civicrm_check_length($value) ." \n";
+    $key = str_pad($key . ':', 20, ' ');
+    $output .= $key . _reporterror_civicrm_check_length($value) . "\n";
   }
 
-  return $output ."\n";
+  // Remove sensitive data.
+  // We do this hackishly this way, because:
+  // - doing a search/replace in the $array can cause changes in the $_SESSION, for example, because of references.
+  // - re-writing print_r() seemed a bit ambitious, and likely to introduce bugs.
+  $output = preg_replace('/\[credit_card_number\] => (\d{6})\d+/', '[credit_card_number] => \1[removed]', $output);
+  $output = preg_replace('/\[cvv2\] => \d+/', '[cvv2] => [removed]', $output);
+  $output = preg_replace('/\[password\] => [^\s]+/', '[password] => [removed]', $output);
+
+  return $output . "\n";
 }
 
 /**
@@ -352,7 +432,7 @@ function _reporterror_civicrm_check_length($item) {
     $item = substr($item, 0, 2000) .'...';
   }
 
-  return $item;
+  return (string) $item;
 }
 
 /**
@@ -361,25 +441,64 @@ function _reporterror_civicrm_check_length($item) {
  *  @return string
  *    Partial email body string with user session info.
  */
-function _reporterror_civicrm_get_session_info() {
+function _reporterror_civicrm_get_session_info($show_session_data = FALSE) {
   $output = '';
 
   // User info
   $session = CRM_Core_Session::singleton();
   $userId = $session->get('userID');
-  $params = array(
-    'version' => 3,
-    'id' => $userId,
-    'return' => 'id,display_name,email',
-  );
 
-  $contact = civicrm_api('Contact', 'getsingle', $params);
-  $output .= "\n\n***LOGGED IN USER***\n";
-  $output .= _reporterror_civicrm_parse_array($contact);
+  if ($userId) {
+    $output .= "\n\n***LOGGED IN USER***\n";
+
+    $params = array(
+      'version' => 3,
+      'id' => $userId,
+      'return' => 'id,display_name,email',
+    );
+
+    $contact = civicrm_api('Contact', 'getsingle', $params);
+
+    if ($contact['is_error']) {
+      $output .= "Failed to fetch user info using the API:\n";
+    }
+
+    $output .= _reporterror_civicrm_parse_array($contact);
+  }
+  else {
+    // Show the remote IP and user-agent of anon users, to facilitate
+    // identification of bots and other source of false positives.
+    $output .= "\n\n***ANONYMOUS USER***\n";
+  }
+
+  $output .= "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "\n";
+  $output .= "HTTP_USER_AGENT: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
+
+  if ($show_session_data) {
+    $output .= "\n\n***SESSION***\n";
+    $output .= _reporterror_civicrm_parse_array($_SESSION);
+  }
 
   // $_SERVER
   $output .= "\n\n***SERVER***\n";
   $output .= _reporterror_civicrm_parse_array($_SERVER);
   return $output;
+}
+
+/**
+ * Helper function to get a specific setting of the extension,
+ * or lookup an override option.
+ *
+ * Option overrides is an array of settings that the calling function
+ * can set to override the behavior of the report. For example, if a
+ * payment processor caught an exception doing a curl/soap request, it
+ * will probably want to disable the full backtrace and session info.
+ */
+function reporterror_setting_get($name, $options_overrides, $default = NULL) {
+  if (isset($options_overrides[$name])) {
+    return $options_overrides[$name];
+  }
+
+  return CRM_Core_BAO_Setting::getItem(REPORTERROR_SETTINGS_GROUP, $name, NULL, $default);
 }
 
