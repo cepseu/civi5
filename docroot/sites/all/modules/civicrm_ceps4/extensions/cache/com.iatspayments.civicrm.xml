@@ -14,8 +14,8 @@
     <author>Alan Dixon</author>
     <email>iats@blackflysolutions.ca</email>
   </maintainer>
-  <releaseDate>2015-10-30</releaseDate>
-  <version>1.4.2</version>
+  <releaseDate>2016-02-19</releaseDate>
+  <version>1.5.0</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>4.4</ver>
@@ -26,4 +26,4 @@
   <civix>
     <namespace>CRM/iATS</namespace>
   </civix>
-<downloadUrl>https://github.com/iATSPayments/com.iatspayments.civicrm/archive/1.4.2.zip</downloadUrl></extension>
+<downloadUrl>https://github.com/iATSPayments/com.iatspayments.civicrm/archive/1.5.0.zip</downloadUrl></extension>
