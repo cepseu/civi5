@@ -185,7 +185,7 @@ $databases['default']['default']['prefix']= array(
       $update_free_access = FALSE;
       $drupal_hash_salt = 'Wuc3CPLHTfTHGXLIzmW7Hn8iS-ErWaJlJOL2nhed2xI';
 
-//      $base_url = 'http://www.ceps.eu';  // NO trailing slash!
+      $base_url = 'https://www.ceps.eu';  // NO trailing slash!
 
 //     Force ssl responses
       $_SERVER['HTTPS'] = 'on';
@@ -235,3 +235,12 @@ $databases['default']['default']['prefix']= array(
      $conf['dropsolid_host_solr'] = '127.0.0.1';
      $conf['dropsolid_port_solr'] = '8983';
      $conf['dropsolid_path_solr'] = '/solr/ceps';
+
+
+     /**
+     * The site has an nginx to varnish revers proxy in front of it
+     * Make Drupal aware of this to use correct forwarded ip
+     */
+     $conf['reverse_proxy'] = 1;
+     $conf['reverse_proxy_addresses'] = array('127.0.0.1');
+     $conf['reverse_proxy_header'] = 'HTTP_X_FORWARDED_FOR';
