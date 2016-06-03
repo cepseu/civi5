@@ -162,7 +162,7 @@ define( 'CIVICRM_SITE_KEY', '1c64cfa471192a271ab2bc78eb283511d2a8' );
 /*
  * If you want to disable IDS, set this to 0.
  */
-define( 'CIVICRM_IDS_ENABLE', 1);
+define( 'CIVICRM_IDS_ENABLE', 0);
 
 /**
  * Multi org / Multi site settings:
