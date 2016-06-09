@@ -41,10 +41,11 @@
 
 var group = $(".group-sidebar-left > .group-right");
 var day = group.find(".formatted-date-number").text();
+var time = group.find(".formatted-date-time-from").text();
 var month_year = group.find(".formatted-date-month-year").text().split(" ");
 var month = month_year[0];
 var year  = month_year[1];
-var date  = month + " " + day + ", " + year;
+var date  = month + " " + day + ", " + year + ' ' + time;
 var event_date = new Date(date);
 var curr_date  = new Date();
 
@@ -56,7 +57,7 @@ if (curr_date <= event_date) {
    var butt = '<a class="link-button arrow" href="/civicrm/event/register?id=' + xid + '&reset=1">' + Drupal.t('Register') + '</a>';
 }
 else {
-   var butt = "";
+   var butt = '';
 }
 
     $('.field-name-field-event1-id').children().replaceWith(butt);
