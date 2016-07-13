@@ -1,24 +1,26 @@
 <?xml version="1.0"?>
-<extension key="me.twomice.civicrm.aggregatehouseholdcontributions" type="module">
+<extension key="me.twomice.civicrm.aggregatehouseholdcontributions" type="report">
   <file>aggregatehouseholdcontributions</file>
-  <name>Aggregated houshold contributions</name>
+  <name>Aggregated household contributions</name>
   <description>Provides a report template for analyzing contributions aggregated at the household level.</description>
   <license>GPL-3.0</license>
   <maintainer>
     <author>Allen Shaw</author>
-    <email>allen@twomice.me</email>
+    <email>allen@joineryhq.com</email>
   </maintainer>
-  <releaseDate>2015-04-26</releaseDate>
-  <version>1.1</version>
-  <develStage>stable</develStage>
+  <releaseDate>2016-06-22</releaseDate>
+  <version>1.2</version>
   <urls>
-    <url desc="Plugin development sponsor">http://emphanos.com</url>
+    <url desc="Documentation">https://github.com/twomice/me.twomice.civicrm.aggregatehouseholdcontributions</url>
+    <url desc="Support">https://github.com/twomice/me.twomice.civicrm.aggregatehouseholdcontributions/issues</url>
   </urls>
   <compatibility>
     <ver>4.4</ver>
+    <ver>4.6</ver>
   </compatibility>
-  <comments>Plugin development sponsored by Emphanos, LLC. http://emphanos.com</comments>
-  <civix>
-    <namespace>CRM/Aggregatehouseholdcontributions</namespace>
-  </civix>
-<downloadUrl>https://github.com/twomice/me.twomice.civicrm.aggregatehouseholdcontributions/archive/1.1.zip</downloadUrl></extension>
+  <comments>Extension development sponsored by Donate Life Northwest (http://donatelifenw.org).</comments>
+  <typeInfo>
+    <component>CiviContribute</component>
+    <reportUrl>me.twomice.civicrm.aggregatehouseholdcontributions</reportUrl>
+  </typeInfo>
+<downloadUrl>https://github.com/twomice/me.twomice.civicrm.aggregatehouseholdcontributions/archive/1.2.zip</downloadUrl><develStage>stable</develStage></extension>

@@ -103,6 +103,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   left: -9999em;
 }
 
+.view-contries-in-the-database .view-filters > form .search-wrap {
+ position: relative;
+}
+
+
 .list-of-3 .more-link a, .pane-all-topics-link-pane .pane-content a, footer .newsletter-right .newsletter-link a, .list-other-with-link .more-link > a, .view .item-list .pager-load-more a, .research-area-links.pane-custom .pane-content a {
   display: inline-block;
   text-align: center;

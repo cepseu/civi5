@@ -56,11 +56,6 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
-RewriteRule ^book/(.+)$ /publications/$1 [R=301,L]
-RewriteRule ^author/(.+)$ /content/$1 [R=301,L]
-RewriteRule ^member/(.+)$ /profiles/$1 [R=301,L]
-
-
   # Set "protossl" to "s" if we were accessed via https://.  This is used later
   # if you enable "www." stripping or enforcement, in order to ensure that
   # you don't bounce between http and https.
@@ -94,9 +89,9 @@ RewriteRule ^member/(.+)$ /profiles/$1 [R=301,L]
   # To redirect all users to access the site WITH the 'www.' prefix,
   # (http://example.com/... will be redirected to http://www.example.com/...)
   # uncomment the following:
-#   RewriteCond %{HTTP_HOST} .
-#   RewriteCond %{HTTP_HOST} !^www\. [NC]
-#   RewriteRule ^ http%{ENV:protossl}://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # RewriteCond %{HTTP_HOST} .
+  # RewriteCond %{HTTP_HOST} !^www\. [NC]
+  # RewriteRule ^ http%{ENV:protossl}://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   #
   # To redirect all users to access the site WITHOUT the 'www.' prefix,
   # (http://www.example.com/... will be redirected to http://example.com/...)
@@ -147,3 +142,8 @@ RewriteRule ^member/(.+)$ /profiles/$1 [R=301,L]
   </IfModule>
 </IfModule>
 
+# Add headers to all responses.
+<IfModule mod_headers.c>
+  # Disable content sniffing, since it's an attack vector.
+  Header always set X-Content-Type-Options nosniff
+</IfModule>

@@ -46,10 +46,10 @@ class CRM_Mailgun_Page_HandleBounceWebhook extends CRM_Core_Page {
       }
     }
 
-    if ( $signature !== hash_hmac("sha256", $timestamp . $token, $apiKey) ) {
-      $msg = ts('Failed to verify signature');
-      CRM_Core_Error::fatal($msg);      
-    }
+//    if ( $signature !== hash_hmac("sha256", $timestamp . $token, $apiKey) ) {
+//      $msg = ts('Failed to verify signature');
+//      CRM_Core_Error::fatal($msg);      
+//    }
 
     $recipient = CRM_Utils_Request::retrieve('recipient', 'String', $store, false, null, 'POST');
     $error = CRM_Utils_Request::retrieve('error', 'String', $store, false, null, 'POST');
