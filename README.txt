@@ -28,3 +28,4 @@ http://95.142.175.163/redmine/projects/dropsolid_ip/wiki/Install_profile
 * Interaction design > wiki
 * Designs > wiki
 * User documentation + screens > wiki
+
