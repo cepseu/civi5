@@ -5,24 +5,24 @@ cd /var/www/customprojects/ceps/dev/docroot
 #D7
 
 #Update site
-#drush updb -y
+drush updb -y
 
 #Enable ui modules
-#drush en features fe_block -y
-#drush dis field_ui update schema devel feeds_ui views_ui switcheroo dblog ds_ui -y
-#drush dis ftools features_orphans diff -y
+drush en features fe_block -y
+drush dis field_ui update schema devel feeds_ui views_ui switcheroo dblog ds_ui -y
+drush dis ftools features_orphans diff -y
 
 # Clear caches
 drush cc all
 
 #Feature reverts
-#drush fra -y
+drush fra -y
 
 #Rebuild content permissions
-#drush php-eval 'node_access_rebuild()'
+drush php-eval 'node_access_rebuild()'
 
 # Clear caches
-#drush cc all
+drush cc all
 
 #Reindex content Optional
 #drush search-reindex -y
@@ -41,7 +41,7 @@ drush cc all
 #fi
 
 # Run cron
-#drush cron
+drush cron
 
 #Set dev settings
 drush vset --yes --always-set preprocess_css 1

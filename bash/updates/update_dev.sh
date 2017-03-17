@@ -5,26 +5,27 @@ cd /var/www/customprojects/ceps/dev/docroot
 #D7
 
 #Update site
-#drush updb -y
+drush updb -y
 
 #Enable ui modules
-#drush en features fe_block ftools features_orphans diff -y
-#drush en field_ui update schema devel feeds_ui views_ui switcheroo dblog glue simpletest masquerade -y
+drush en features fe_block ftools features_orphans diff -y
+drush en field_ui update schema devel feeds_ui views_ui switcheroo dblog glue simpletest -y
+#masquerade -y
 
 # Clear caches
 drush cc all
 
 #Feature reverts
-#drush fra -y
+drush fra -y
 
 #Enable the views development settings
-#drush php-eval 'views_development_settings()'
+drush php-eval 'views_development_settings()'
 
 #Rebuild content permissions
-#drush php-eval 'node_access_rebuild()'
+drush php-eval 'node_access_rebuild()'
 
 # Clear caches
-#drush cc all
+drush cc all
 
 #Reindex content Optional
 #drush search-reindex -y
