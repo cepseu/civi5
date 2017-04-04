@@ -239,10 +239,7 @@ class CacheflushUIController extends EntityDefaultUIController {
       $row[] = ($preset->status == 1) ? t('enabled') : t('disabled');
       $row[] = ($preset->menu == 1) ? t('Yes') : t('No');
       $row[] = format_date($preset->created, 'short');
-
-      if (cacheflush_ui_access('view', $preset)) {
-        $operations['view'] = array('title' => t('View'), 'href' => 'cacheflush/' . $preset->id . '/view');
-      }
+      
       if (cacheflush_ui_access('update', $preset)) {
         $operations['update'] = array(
           'title' => t('Edit'),
@@ -316,7 +313,7 @@ function cacheflush_ui_mass_update(array $entitys, array $updates) {
       'error_message' => t('The update has encountered an error.'),
       // The operations do not live in the .module file, so we need to
       // tell the batch engine which file to load before calling them.
-      'file' => drupal_get_path('module', 'cacheflush_ui') . '/includes/cacheflush_ui.form.inc',
+      'file' => drupal_get_path('module', 'cacheflush_ui') . '/includes/cacheflush_ui.class.inc',
     );
     batch_set($batch);
   }

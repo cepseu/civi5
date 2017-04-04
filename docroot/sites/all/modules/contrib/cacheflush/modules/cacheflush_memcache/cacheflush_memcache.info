@@ -5,9 +5,9 @@ dependencies[] = cacheflush_ui
 dependencies[] = memcache
 core = "7.x"
 
-; Information added by Drupal.org packaging script on 2015-11-05
-version = "7.x-3.0-rc2"
+; Information added by Drupal.org packaging script on 2017-03-16
+version = "7.x-3.0-rc3"
 core = "7.x"
 project = "cacheflush"
-datestamp = "1446718462"
+datestamp = "1489664286"
 
