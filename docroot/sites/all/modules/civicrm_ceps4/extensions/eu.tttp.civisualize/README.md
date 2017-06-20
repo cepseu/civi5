@@ -13,15 +13,15 @@ Civisualize will help you out with ready to use visualizations that we have crea
 ***
 Installation
 ------------
-You can install this extension directly from your civicrm site, like any other etension from Administer->System settings->Manage extensions
-
-If you don't have a bootstrap based theme, you should install  https://github.com/TechToThePeople/bootstrapvisualize
-
-You can also live at the cutting edge and directly clone the master branch to your civiCRM extension directory using
+You can directly clone to your civiCRM extension directory using
 
 `git clone https://github.com/TechToThePeople/civisualize.git`
 
+You can also download a zip file from 
 
+`https://codeload.github.com/TechToThePeople/civisualize/zip/master`
+
+and extract in your extension directory. The next step is enabling the extension which can be done from `"Administer -> Customize -> Manage CiviCRM Extensions".`
 
 Ready to Use Visualizations
 ---------------------------
@@ -128,6 +128,9 @@ In the template, put
 We have also used {crmTitle} function which let you set the title of the page, and a print_filter function that will help you in playing around with crossfilter.
 
 Checkour resources at [dc.js](http://dc-js.github.io/dc.js/) and create your first visualization.
+
+## Documentation and help
+If you want to add a document, add a markdown file that has the same name as the template into the doc folder
 
 We love you
 -------

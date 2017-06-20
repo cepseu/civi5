@@ -1282,6 +1282,10 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
         $params = $data['activity'][1];
         // Create mode
         if (empty($this->ent['activity'][$n]['id'])) {
+          // Skip if no activity type
+          if (empty($params['activity_type_id'])) {
+            continue;
+          }
           // Automatic status based on whether activity_date_time is in the future
           if (empty($params['status_id'])) {
             $params['status_id'] = strtotime(wf_crm_aval($params, 'activity_date_time', 'now')) > time() ? 'Scheduled' : 'Completed';
@@ -1296,7 +1300,7 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
             }
           }
           // Format details as html
-          $this->formatSubmissionDetails($parmas, $n);
+          $this->formatSubmissionDetails($params, $n);
         }
         // Update mode
         else {
@@ -1305,7 +1309,7 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
           // Update details when user has selected he wants to update the details
           if (!empty($this->data['activity'][$n]['details']['update_existing'])) {
             // Format details as html
-            $this->formatSubmissionDetails($parmas, $n);
+            $this->formatSubmissionDetails($params, $n);
           }
         }
         // Allow "automatic" values to pass-thru if empty
@@ -1562,6 +1566,11 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
       $billing_fields['credit_card_number'] = FALSE;
       $billing_fields['cvv2'] = FALSE;
     }
+    if (!empty($_POST['stripe_source'])) {
+      // Using Stripe payment processor - cc fields not posted using sources
+      $billing_fields['credit_card_number'] = FALSE;
+      $billing_fields['cvv2'] = FALSE;
+    }
     if (!empty($_POST['bank_account_type'])) {
       // unset/bypass the CC validation if we're doing Direct Debit (ACHEFT) - in that case we have a Bank Account Type
       $billing_fields['credit_card_number'] = FALSE;
@@ -1719,7 +1728,9 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
   private function contributionRecur($contributionParams) {
     $installments = $contributionParams['installments'];
     if ($installments != 0) {
-      $contributionParams['total_amount'] = $contributionParams['total_amount'] / $installments;
+      // DRU-2862396 - we must ensure to only present 2 decimals to CiviCRM:
+      $contributionRecurAmount = floor(($contributionParams['total_amount'] / $installments) * 100) / 100;
+      $contributionFirstAmount = $contributionParams['total_amount'] - $contributionRecurAmount * ($installments - 1);
     }
 
     // Create Params for Creating the Recurring Contribution Series and Create it
@@ -1729,7 +1740,7 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
       'frequency_interval' => wf_crm_aval($contributionParams, 'frequency_interval', 1),
       'frequency_unit' => wf_crm_aval($contributionParams, 'frequency_unit', 'month'),
       'installments' => $installments,
-      'amount' => $contributionParams['total_amount'],
+      'amount' => $contributionRecurAmount,
       'contribution_status_id' => 5,
       'currency' => $contributionParams['currency'],
       'payment_processor_id' =>  $contributionParams['payment_processor_id'],
@@ -1738,6 +1749,7 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
     $resultRecur = wf_civicrm_api('ContributionRecur', 'create', $contributionRecurParams);
 
     // Run the Transaction - and Create the Contribution Record - relay Recurring Series information in addition to the already existing Params [and re-key where needed]; at times two keys are required
+    $contributionParams['total_amount'] = $contributionFirstAmount;
     $additionalParams = array(
       'contribution_recur_id' => $resultRecur['id'],
       'contributionRecurID' => $resultRecur['id'],
