@@ -95,6 +95,24 @@ function nodeviewcount_admin_settings_form($form, &$form_state) {
     '#options' => $options_flush_log_timer,
     '#description' => t('Older log entries will be automatically discarded, (Requires a correctly configured <a href="@cron">cron maintenance task</a>.). Pick Never if you dont want logs to be deleted.', $cron_path),
   );
+  $options_views_intervals = array(
+    0 => t('Never'),
+  );
+  $time_views_intervals = array(
+    0,
+    600,
+    3600,
+    36000,
+    86400,
+  );
+  $options_views_intervals += drupal_map_assoc($time_views_intervals, 'format_interval');
+  $form['nodeviewcount_views_limit'] = array(
+    '#title' => t('Views limit'),
+    '#description' => t('It stops increasing the number of views for a specific user and specific node during the selected time period. It may be necessary to protect the database from flooding.'),
+    '#type' => 'select',
+    '#options' => $options_views_intervals,
+    '#default_value' => variable_get('nodeviewcount_views_limit', 0),
+  );
   $form['#submit'][] = 'nodeviewcount_admin_settings_form_submit';
   $form = system_settings_form($form);
   return $form;

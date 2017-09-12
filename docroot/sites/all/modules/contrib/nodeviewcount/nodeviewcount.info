@@ -4,9 +4,9 @@ core = 7.x
 
 configure = admin/config/content/nodeviewcount
 
-; Information added by Drupal.org packaging script on 2015-12-21
-version = "7.x-2.4"
+; Information added by Drupal.org packaging script on 2016-08-19
+version = "7.x-2.6"
 core = "7.x"
 project = "nodeviewcount"
-datestamp = "1450675141"
+datestamp = "1471604366"
 

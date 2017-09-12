@@ -402,7 +402,6 @@ class CacheFlushUICRUDAccessTest extends DrupalWebTestCase {
     $this->assertRaw('InterfaceUser2Entity');
 
     // User has access on the 4 entities to all operations.
-    $this->assertLink('View', 3);
     $this->assertLink('Edit', 3);
     $this->assertLink('Delete', 3);
 
@@ -423,7 +422,6 @@ class CacheFlushUICRUDAccessTest extends DrupalWebTestCase {
     $this->assertNoRaw('InterfaceUser2Entity');
 
     // User has access on the own entity to all operations.
-    $this->assertLink('View', 0);
     $this->assertLink('Edit', 0);
     $this->assertLink('Delete', 0);
 
@@ -444,10 +442,8 @@ class CacheFlushUICRUDAccessTest extends DrupalWebTestCase {
     $this->assertRaw('InterfaceUser2Entity');
 
     // User has access to all entities.
-    // View 4.
     // Edit 1 -> own.
     // No delete.
-    $this->assertLink('View', 3);
     $this->assertLink('Edit', 0);
     $this->assertNoLink('Delete');
 

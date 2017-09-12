@@ -1,4 +1,11 @@
 =======================================
+cacheflush 7.x-3.0-rc3
+=======================================
+#2607528: Upgrade from 2.x to 3.x - remove hook_update_dependencies.
+#2861015: Bulk options fails if more than 10 items are selected
+#2634306: Remove the View operation link to avoid seeing the blank view entity tab.
+
+=======================================
 cacheflush 7.x-3.0-rc2
 =======================================
 #2604866: Add @return values in the comment docblocks......
