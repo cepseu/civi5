@@ -2,7 +2,7 @@
       $db_name = 'ceps_staging';
       $db_user = 'ceps';
       $db_pass = 'tralala07';
-      $db_host = 'db01.dropsolid.com';
+      $db_host = 'localhost';
       $db_port = '3306';
       $db_driver = 'mysql';
       $db_prefix = '';
