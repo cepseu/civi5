@@ -54,12 +54,14 @@ function reporterror_civicrm_uninstall() {
   }
 
   // Delete our settings
-  $params = array(
-    1 => array(REPORTERROR_SETTINGS_GROUP, 'String'),
-  );
+  // FIXME: Maybe settings metadata helps? This is redundant.
+  $settings = [ 'show_full_backtrace', 'show_post_data', 'show_session_data', 'noreferer_sendreport', 'noreferer_sendreport_event', 'bots_sendreport', 'bots_404', 'bots_regexp' ];
 
-  $sql = "DELETE FROM civicrm_setting WHERE group_name = %1";
-  $dao = CRM_Core_DAO::executeQuery($sql, $params);
+  foreach ($settings as $val) {
+    CRM_Core_DAO::executeQuery('DELETE FROM civicrm_setting WHERE name = %1', array(
+      1 => array($val, 'String'),
+    ));
+  }
 
   return _reporterror_civix_civicrm_uninstall();
 }
@@ -194,6 +196,19 @@ function reporterror_civicrm_handler($vars, $options_overrides = array()) {
     elseif ($handle == 2) {
       $redirect_path = CRM_Utils_System::url('civicrm/event/register', 'reset=1&id=' . $pageid);
     }
+  }
+
+  // Profiles reserved to authenticated users
+  if ($arg[0] == 'civicrm' && $arg[1] == 'profile') {
+    $handle = reporterror_setting_get('noreferer_handle_profiles', $options_overrides);
+
+    $redirect_path = CRM_Utils_System::baseCMSURL();
+    $sendreport = FALSE;
+
+    $output = reporterror_civicrm_generatereport($site_name, $vars, $redirect_path, $options_overrides);
+    $log = "Report Error Extension: redirected to home page:\n" . $output;
+
+    CRM_Core_Error::debug_log_message($log);
   }
 
   // Identify and possibly ignore bots

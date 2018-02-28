@@ -1,24 +1,5 @@
 <?php
 
-/*
- +--------------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2012-2013                                      |
- +--------------------------------------------------------------------------+
- | This program is free software: you can redistribute it and/or modify     |
- | it under the terms of the GNU Affero General Public License as published |
- | by the Free Software Foundation, either version 3 of the License, or     |
- | (at your option) any later version.                                      |
- |                                                                          |
- | This program is distributed in the hope that it will be useful,          |
- | but WITHOUT ANY WARRANTY; without even the implied warranty of           |
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            |
- | GNU Affero General Public License for more details.                      |
- |                                                                          |
- | You should have received a copy of the GNU Affero General Public License |
- | along with this program.  If not, see <http://www.gnu.org/licenses/>.    |
- +--------------------------------------------------------------------------+
-*/
-
 class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
   protected $_values;
 
@@ -32,9 +13,14 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
 
     $defaults['show_full_backtrace'] = CRM_Utils_Array::value('show_full_backtrace', $defaults, FALSE);
     $defaults['show_post_data'] = CRM_Utils_Array::value('show_post_data', $defaults, FALSE);
+    $defaults['show_session_data'] = CRM_Utils_Array::value('show_session_data', $defaults, FALSE);
+    $defaults['noreferer_sendreport'] = CRM_Utils_Array::value('noreferer_sendreport', $defaults, TRUE);
+    $defaults['noreferer_sendreport_event'] = CRM_Utils_Array::value('noreferer_sendreport_event', $defaults, TRUE);
+    $defaults['reporterror_handle_profile'] = CRM_Utils_Array::value('reporterror_handle_profile', $defaults, FALSE);
+    $defaults['reporterror_sendreport_profile'] = CRM_Utils_Array::value('reporterror_sendreport_profile', $defaults, TRUE);
     $defaults['bots_sendreport'] = CRM_Utils_Array::value('bots_sendreport', $defaults, FALSE);
     $defaults['bots_404'] = CRM_Utils_Array::value('bots_404', $defaults, FALSE);
-    $defaults['bots_regexp'] = CRM_Utils_Array::value('bots_regexp', $defaults, '(Googlebot|bingbot)');
+    $defaults['bots_regexp'] = CRM_Utils_Array::value('bots_regexp', $defaults, '(Googlebot|bingbot|python|Baiduspider|Yandex)');
 
     return $defaults;
   }
@@ -59,16 +45,17 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
 
     // Special handling of Contribution page errors.
     // Get a list of contribution pages
-    $results = civicrm_api3('ContributionPage', 'get', array('is_active' => 1));
+    $results = civicrm_api3('ContributionPage', 'get', array(
+      'is_active' => 1,
+      'option.limit' => 0,
+    ));
 
     $contribution_pages = array(
       0 => ts('- Select -'),
     );
 
-    if($results['is_error'] == 0) {
-      foreach ($results['values'] as $val) {
-        $contribution_pages[$val['id']] = $val['title'];
-      }
+    foreach ($results['values'] as $val) {
+      $contribution_pages[$val['id']] = CRM_Utils_Array::value('title', $val);
     }
 
     $radio_choices = array(
@@ -92,16 +79,17 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
       TRUE);
 
     // Special handling of Event page errors.
-    $results = civicrm_api3('Event', 'get', array('is_active' => 1));
+    $results = civicrm_api3('Event', 'get', array(
+      'is_active' => 1,
+      'option.limit' => 0,
+    ));
 
     $event_pages = array(
       0 => ts('- Select -'),
     );
 
-    if($results['is_error'] == 0) {
-      foreach ($results['values'] as $val) {
-        $event_pages[$val['id']] = $val['title'];
-      }
+    foreach ($results['values'] as $val) {
+      $event_pages[$val['id']] = CRM_Utils_Array::value('title', $val);
     }
 
     $radio_choices = array(
@@ -123,6 +111,21 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
       ts('Redirect to Event Page', array('domain' => 'ca.bidon.reporterror')),
       $event_pages,
       TRUE);
+
+    // Special handling of profiles
+    $radio_choices = array(
+      '0' => ts('Do nothing (show the CiviCRM error)', array('domain' => 'ca.bidon.reporterror')),
+      '1' => ts('Redirect to front page of CMS', array('domain' => 'ca.bidon.reporterror')),
+    );
+
+    $this->addRadio('reporterror_handle_profile',
+      ts('Enable transparent redirection?', array('domain' => 'ca.bidon.reporterror')),
+      $radio_choices,
+      array('options_per_line' => 1),
+      '<br/>' /* one option per line */
+     );
+
+    $this->addYesNo('reporterror_sendreport_profile', ts('Send error reports for this particular error?', array('domain' => 'ca.bidon.reporterror')));
 
     // Special handling of bots
     $this->addYesNo('bots_sendreport', ts('Send error reports for errors caused by bots?', array('domain' => 'ca.bidon.reporterror')), FALSE, TRUE);
@@ -162,6 +165,8 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
       'noreferer_handle_event',
       'noreferer_handle_eventid',
       'noreferer_sendreport_event',
+      'reporterror_handle_profile',
+      'reporterror_sendreport_profile',
       'mailto',
       'show_full_backtrace',
       'show_post_data',
@@ -180,4 +185,3 @@ class CRM_Admin_Form_Setting_ReportError extends CRM_Admin_Form_Setting {
     CRM_Core_Session::setStatus(ts('Settings saved.', array('domain' => 'ca.bidon.reporterror')), '', 'success');
   }
 }
-

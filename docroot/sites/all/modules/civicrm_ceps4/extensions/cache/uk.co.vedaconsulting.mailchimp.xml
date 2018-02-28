@@ -8,8 +8,8 @@
     <author>Deepak Srivastava, Kajan, Parvez Saleh and Rich Lott (Artful Robot)</author>
     <email>support@vedaconsulting.co.uk</email>
   </maintainer>
-  <releaseDate>2016-12-23</releaseDate>
-  <version>2.0</version>
+  <releaseDate>2017-10-02</releaseDate>
+  <version>2.0.1</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>4.4</ver>
@@ -24,4 +24,4 @@
   <urls>
     <url desc="Documentation">https://github.com/veda-consulting/uk.co.vedaconsulting.mailchimp/blob/master/README.md</url>
   </urls>
-<downloadUrl>https://github.com/veda-consulting/uk.co.vedaconsulting.mailchimp/archive/v2.0.zip</downloadUrl></extension>
+<downloadUrl>https://github.com/veda-consulting/uk.co.vedaconsulting.mailchimp/archive/v2.0.1.zip</downloadUrl></extension>
