@@ -3260,6 +3260,11 @@ div div .view-mode-teaser.node-blog-post, div div .view-mode-teaser.node-book, d
   text-decoration: underline;
 }
 
+.view-mode-mini_teaser.node-book .field-name-field-html-nl-pubs-area {
+ font-size: 11px;
+ font-weight: bold;
+}
+
 .view-mode-mini_teaser.node-events .field-type-date,
 .view-mode-mini_teaser.node-events .field-name-quote-date-media,
 .view-mode-mini_teaser.node-events .field-name-quote-researcher-media,
