@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,24 +23,21 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
- * This class provides the functionality to create PDF letter for a group of
- * contacts or a single contact.
+ * This class provides the functionality to create PDF letter for a group of contacts or a single contact.
  */
 class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
 
   /**
-   * all the existing templates in the system
+   * All the existing templates in the system.
    *
    * @var array
    */
@@ -53,21 +50,22 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
   public $_activityId = NULL;
 
   /**
-   * build all the data structures needed to build the form
-   *
-   * @return void
-   * @access public
+   * Build all the data structures needed to build the form.
    */
-  function preProcess() {
+  public function preProcess() {
 
     $this->skipOnHold = $this->skipDeceased = FALSE;
     CRM_Contact_Form_Task_PDFLetterCommon::preProcess($this);
 
     // store case id if present
-    $this->_caseId = CRM_Utils_Request::retrieve('caseid', 'Positive', $this, FALSE);
+    $this->_caseId = CRM_Utils_Request::retrieve('caseid', 'CommaSeparatedIntegers', $this, FALSE);
+    if (!empty($this->_caseId) && strpos($this->_caseId, ',')) {
+      $this->_caseIds = explode(',', $this->_caseId);
+      unset($this->_caseId);
+    }
 
     // retrieve contact ID if this is 'single' mode
-    $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this, FALSE);
+    $cid = CRM_Utils_Request::retrieve('cid', 'CommaSeparatedIntegers', $this, FALSE);
 
     if ($cid) {
       // this is true in non-search context / single mode
@@ -79,7 +77,6 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
     if ($cid) {
       CRM_Contact_Form_Task_PDFLetterCommon::preProcessSingle($this, $cid);
       $this->_single = TRUE;
-      $this->_cid = $cid;
     }
     else {
       parent::preProcess();
@@ -87,7 +84,10 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
     $this->assign('single', $this->_single);
   }
 
-  function setDefaultValues() {
+  /**
+   * Set default values for the form.
+   */
+  public function setDefaultValues() {
     $defaults = array();
     if (isset($this->_activityId)) {
       $params = array('id' => $this->_activityId);
@@ -99,11 +99,7 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
   }
 
   /**
-   * Build the form
-   *
-   * @access public
-   *
-   * @return void
+   * Build the form object.
    */
   public function buildQuickForm() {
     //enable form element
@@ -112,14 +108,25 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
   }
 
   /**
-   * process the form after the input has been submitted and validated
-   *
-   * @access public
-   *
-   * @return None
+   * Process the form after the input has been submitted and validated.
    */
   public function postProcess() {
     CRM_Contact_Form_Task_PDFLetterCommon::postProcess($this);
   }
-}
 
+  /**
+   * List available tokens for this form.
+   *
+   * @return array
+   */
+  public function listTokens() {
+    $tokens = CRM_Core_SelectValues::contactTokens();
+    if (isset($this->_caseId) || isset($this->_caseIds)) {
+      // For a single case, list tokens relevant for only that case type
+      $caseTypeId = isset($this->_caseId) ? CRM_Core_DAO::getFieldValue('CRM_Case_DAO_Case', $this->_caseId, 'case_type_id') : NULL;
+      $tokens += CRM_Core_SelectValues::caseTokens($caseTypeId);
+    }
+    return $tokens;
+  }
+
+}

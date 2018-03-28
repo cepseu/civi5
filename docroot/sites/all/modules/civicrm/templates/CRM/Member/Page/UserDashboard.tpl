@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,6 +23,8 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
+{crmRegion name="crm-member-userdashboard-pre"}
+{/crmRegion}
 <div class="view-content">
 {if $activeMembers}
 <div id="memberships">
@@ -92,3 +94,5 @@
    </div>
 {/if}
 </div>
+{crmRegion name="crm-member-userdashboard-post"}
+{/crmRegion}

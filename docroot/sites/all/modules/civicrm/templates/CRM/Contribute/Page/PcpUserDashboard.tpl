@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,6 +23,8 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
+{crmRegion name="crm-contribute-pcp-userdashboard-pre"}
+{/crmRegion}
 <div class="view-content">
 
 {if $pcpInfo}
@@ -77,7 +79,7 @@
 
   {foreach from=$pcpBlock item=row}
   <tr class="{cycle values="odd-row,even-row"}">
-    <td><a href="{crmURL p='civicrm/contribute/transact' q="id=`$row.pageId`&reset=1"}" title="{ts}View campaign page{/ts}">{$row.pageTitle}</a></td>
+    <td>{if $row.component eq 'contribute'}<a href="{crmURL p='civicrm/contribute/transact' q="id=`$row.pageId`&reset=1"}" title="{ts}View campaign page{/ts}">{else}<a href="{crmURL p='civicrm/event/register' q="id=`$row.pageId`&reset=1"}" title="{ts}View campaign page{/ts}">{/if}{$row.pageTitle}</a></td>
         <td>{if $row.end_date}{$row.end_date|truncate:10:''|crmDate}{else}({ts}ongoing{/ts}){/if}</td>
     <td>{$row.action|replace:'xx':$row.pageId}</td>
   </tr>
@@ -88,3 +90,5 @@
 {/if}
 
 </div>
+{crmRegion name="crm-contribute-pcp-userdashboard-post"}
+{/crmRegion}

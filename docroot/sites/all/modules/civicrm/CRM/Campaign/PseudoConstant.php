@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,14 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
@@ -42,38 +40,34 @@ class CRM_Campaign_PseudoConstant extends CRM_Core_PseudoConstant {
   /**
    * Activity types
    * @var array
-   * @static
    */
   private static $activityType;
 
   /**
    * Campaign Type
    * @var array
-   * @static
    */
   private static $campaignType = array();
 
   /**
    * Campaign Status
    * @var array
-   * @static
    */
   private static $campaignStatus = array();
 
   /**
    * Engagement Level
-   * @static
    */
   private static $engagementLevel;
 
   /**
-   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
+   * @deprecated. Please use the buildOptions() method in the appropriate BAO object.
    * Get all the survey activity types
    *
-   * @access public
+   * @param string $returnColumn
    *
-   * @return array - array reference of all survey activity types.
-   * @static
+   * @return array
+   *   array reference of all survey activity types.
    */
   public static function &activityType($returnColumn = 'name') {
     $cacheKey = $returnColumn;
@@ -92,16 +86,14 @@ class CRM_Campaign_PseudoConstant extends CRM_Core_PseudoConstant {
   }
 
   /**
-   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
+   * @deprecated. Please use the buildOptions() method in the appropriate BAO object.
    * Get all campaign types.
    *
    * The static array campaignType is returned
    *
-   * @access public
-   * @static
    *
-   * @return array - array reference of all campaign types.
-   *
+   * @return array
+   *   array reference of all campaign types.
    */
   public static function &campaignType() {
     if (!self::$campaignType) {
@@ -112,16 +104,14 @@ class CRM_Campaign_PseudoConstant extends CRM_Core_PseudoConstant {
   }
 
   /**
-   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
+   * @deprecated. Please use the buildOptions() method in the appropriate BAO object.
    * Get all campaign status.
    *
    * The static array campaignStatus is returned
    *
-   * @access public
-   * @static
    *
-   * @return array - array reference of all campaign status.
-   *
+   * @return array
+   *   array reference of all campaign status.
    */
   public static function &campaignStatus() {
     if (!self::$campaignStatus) {
@@ -132,15 +122,14 @@ class CRM_Campaign_PseudoConstant extends CRM_Core_PseudoConstant {
   }
 
   /**
-   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
+   * @deprecated. Please use the buildOptions() method in the appropriate BAO object.
    * Get all Engagement Level.
    *
    * The static array Engagement Level is returned
    *
-   * @access public
-   * @static
    *
-   * @return array - array reference of all Engagement Level.
+   * @return array
+   *   array reference of all Engagement Level.
    */
   public static function &engagementLevel() {
     if (!isset(self::$engagementLevel)) {
@@ -154,16 +143,13 @@ class CRM_Campaign_PseudoConstant extends CRM_Core_PseudoConstant {
    * Flush given pseudoconstant so it can be reread from db
    * next time it's requested.
    *
-   * @access public
-   * @static
    *
-   * @param boolean $name pseudoconstant to be flushed
-   *
+   * @param bool|string $name pseudoconstant to be flushed
    */
   public static function flush($name = 'cache') {
-   if (isset(self::$$name)) {
+    if (isset(self::$$name)) {
       self::$$name = NULL;
     }
   }
-}
 
+}

@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  * Build the $data array for CiviGrant related tables
@@ -252,6 +252,7 @@ function _civicrm_grant_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -294,6 +295,7 @@ function _civicrm_grant_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -328,4 +330,3 @@ function _civicrm_grant_data(&$data, $enabled) {
     ),
   );
 }
-

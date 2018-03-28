@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,14 +23,19 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
+
+/**
+ *
+ * @package CRM
+ * @copyright CiviCRM LLC (c) 2004-2017
+ */
 
 /**
  * A PHP cron script to format all the addresses in the database. Currently
  * it only does geocoding if the geocode values are not set. At a later
  * stage we will also handle USPS address cleanup and other formatting
  * issues
- *
  */
 class CRM_Utils_Address_BatchUpdate {
 
@@ -43,6 +48,11 @@ class CRM_Utils_Address_BatchUpdate {
   var $returnMessages = array();
   var $returnError = 0;
 
+  /**
+   * Class constructor.
+   *
+   * @param array $params
+   */
   public function __construct($params) {
 
     foreach ($params as $name => $value) {
@@ -52,14 +62,17 @@ class CRM_Utils_Address_BatchUpdate {
     // fixme: more params verification
   }
 
+  /**
+   * Run batch update.
+   *
+   * @return array
+   */
   public function run() {
-
-    $config = &CRM_Core_Config::singleton();
 
     // do check for geocoding.
     $processGeocode = FALSE;
-    if (empty($config->geocodeMethod)) {
-      if ($this->geocoding == 'true') {
+    if (!CRM_Utils_GeocodeProvider::getUsableClassName()) {
+      if (CRM_Utils_String::strtobool($this->geocoding) === TRUE) {
         $this->returnMessages[] = ts('Error: You need to set a mapping provider under Administer > System Settings > Mapping and Geocoding');
         $this->returnError = 1;
         $this->returnResult();
@@ -68,7 +81,7 @@ class CRM_Utils_Address_BatchUpdate {
     else {
       $processGeocode = TRUE;
       // user might want to over-ride.
-      if ($this->geocoding == 'false') {
+      if (CRM_Utils_String::strtobool($this->geocoding) === FALSE) {
         $processGeocode = FALSE;
       }
     }
@@ -83,7 +96,7 @@ class CRM_Utils_Address_BatchUpdate {
     );
     $parseStreetAddress = FALSE;
     if (!$parseAddress) {
-      if ($this->parse == 'true') {
+      if (CRM_Utils_String::strtobool($this->parse) === TRUE) {
         $this->returnMessages[] = ts('Error: You need to enable Street Address Parsing under Administer > Localization > Address Settings.');
         $this->returnError = 1;
         return $this->returnResult();
@@ -92,7 +105,7 @@ class CRM_Utils_Address_BatchUpdate {
     else {
       $parseStreetAddress = TRUE;
       // user might want to over-ride.
-      if ($this->parse == 'false') {
+      if (CRM_Utils_String::strtobool($this->parse) === FALSE) {
         $parseStreetAddress = FALSE;
       }
     }
@@ -105,10 +118,19 @@ class CRM_Utils_Address_BatchUpdate {
     }
 
     // do check for parse street address.
-    return $this->processContacts($config, $processGeocode, $parseStreetAddress);
+    return $this->processContacts($processGeocode, $parseStreetAddress);
   }
 
-  function processContacts(&$config, $processGeocode, $parseStreetAddress) {
+  /**
+   * Process contacts.
+   *
+   * @param bool $processGeocode
+   * @param bool $parseStreetAddress
+   *
+   * @return array
+   * @throws Exception
+   */
+  public function processContacts($processGeocode, $parseStreetAddress) {
     // build where clause.
     $clause = array('( c.id = a.contact_id )');
     $params = array();
@@ -149,10 +171,6 @@ class CRM_Utils_Address_BatchUpdate {
     $totalGeocoded = $totalAddresses = $totalAddressParsed = 0;
 
     $dao = CRM_Core_DAO::executeQuery($query, $params);
-    if ($processGeocode) {
-      require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->geocodeMethod) . '.php');
-    }
-
 
     $unparseableContactAddress = array();
     while ($dao->fetch()) {
@@ -179,8 +197,7 @@ class CRM_Utils_Address_BatchUpdate {
             usleep(5000000);
           }
 
-          $className = $config->geocodeMethod;
-          $className::format( $params, true );
+          CRM_Core_BAO_Address::addGeocoderData($params);
 
           // see if we got a geocode error, in this case we'll trigger a fatal
           // CRM-13760
@@ -188,7 +205,7 @@ class CRM_Utils_Address_BatchUpdate {
             isset($params['geo_code_error']) &&
             $params['geo_code_error'] == 'OVER_QUERY_LIMIT'
           ) {
-            CRM_Core_Error::fatal('Aborting batch geocoding. Hit the over query limit on geocoder.');
+            throw new CRM_Core_Exception('Aborting batch geocoding. Hit the over query limit on geocoder.');
           }
 
           array_shift($params);
@@ -200,10 +217,7 @@ class CRM_Utils_Address_BatchUpdate {
 
         if (isset($params['geo_code_1']) && $params['geo_code_1'] != 'null') {
           $totalGeocoded++;
-          $addressParams['geo_code_1'] = $params['geo_code_1'];
-          $addressParams['geo_code_2'] = $params['geo_code_2'];
-          $addressParams['postal_code'] = $params['postal_code'];
-          $addressParams['postal_code_suffix'] = $params['postal_code_suffix'];
+          $addressParams = $params;
         }
       }
 
@@ -213,9 +227,7 @@ class CRM_Utils_Address_BatchUpdate {
         $success = TRUE;
         // consider address is automatically parseable,
         // when we should found street_number and street_name
-        if (!CRM_Utils_Array::value('street_name', $parsedFields) ||
-          !CRM_Utils_Array::value('street_number', $parsedFields)
-        ) {
+        if (empty($parsedFields['street_name']) || empty($parsedFields['street_number'])) {
           $success = FALSE;
         }
 
@@ -245,14 +257,17 @@ class CRM_Utils_Address_BatchUpdate {
     }
 
     $this->returnMessages[] = ts("Addresses Evaluated: %1", array(
-      1 => $totalAddresses)) . "\n";
+      1 => $totalAddresses,
+      )) . "\n";
     if ($processGeocode) {
       $this->returnMessages[] = ts("Addresses Geocoded: %1", array(
-        1 => $totalGeocoded)) . "\n";
+          1 => $totalGeocoded,
+        )) . "\n";
     }
     if ($parseStreetAddress) {
       $this->returnMessages[] = ts("Street Addresses Parsed: %1", array(
-        1 => $totalAddressParsed)) . "\n";
+          1 => $totalAddressParsed,
+        )) . "\n";
       if ($unparseableContactAddress) {
         $this->returnMessages[] = "<br />\n" . ts("Following is the list of contacts whose address is not parsed:") . "<br />\n";
         foreach ($unparseableContactAddress as $contactLink) {
@@ -264,11 +279,16 @@ class CRM_Utils_Address_BatchUpdate {
     return $this->returnResult();
   }
 
-  function returnResult() {
-    $result             = array();
+  /**
+   * Return result.
+   *
+   * @return array
+   */
+  public function returnResult() {
+    $result = array();
     $result['is_error'] = $this->returnError;
     $result['messages'] = implode("", $this->returnMessages);
     return $result;
   }
-}
 
+}

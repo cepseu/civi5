@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,40 +23,46 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 class CRM_Contact_Form_Edit_TagsAndGroups {
 
   /**
-   * constant to determine which forms we are generating
+   * Constant to determine which forms we are generating.
    *
    * Used by both profile and edit contact
    */
-  CONST GROUP = 1, TAG = 2, ALL = 3;
+  const GROUP = 1, TAG = 2, ALL = 3;
 
   /**
-   * This function is to build form elements
-   * params object $form object of the form
+   * Build form elements.
    *
-   * @param Object  $form        the form object that we are operating on
-   * @param int     $contactId   contact id
-   * @param int     $type        what components are we interested in
-   * @param boolean $visibility  visibility of the field
-   * @param string  $groupName   if used for building group block
-   * @param string  $tagName     if used for building tag block
-   * @param string  $fieldName   this is used in batch profile(i.e to build multiple blocks)
+   * @param CRM_Core_Form $form
+   *   The form object that we are operating on.
+   * @param int $contactId
+   *   Contact id.
+   * @param int $type
+   *   What components are we interested in.
+   * @param bool $visibility
+   *   Visibility of the field.
+   * @param null $isRequired
+   * @param string $groupName
+   *   If used for building group block.
+   * @param string $tagName
+   *   If used for building tag block.
+   * @param string $fieldName
+   *   This is used in batch profile(i.e to build multiple blocks).
    *
-   * @static
-   * @access public
+   * @param string $groupElementType
+   *
    */
-  static function buildQuickForm(&$form,
+  public static function buildQuickForm(
+    &$form,
     $contactId = 0,
     $type = self::ALL,
     $visibility = FALSE,
@@ -110,8 +116,8 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
           ) {
             continue;
           }
-          
-          if ($groupElementType == 'crmasmSelect') {
+
+          if ($groupElementType == 'select') {
             $groupsOptions[$id] = $group['title'];
           }
           else {
@@ -120,9 +126,9 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
           }
         }
 
-        if ($groupElementType == 'crmasmSelect' && !empty($groupsOptions)) {
-          $form->add('select', $fName, ts('%1', array(1 => $groupName)), $groupsOptions, FALSE,
-            array('id' => $fName, 'multiple' => 'multiple', 'title' => ts('- select -'))
+        if ($groupElementType == 'select' && !empty($groupsOptions)) {
+          $form->add('select', $fName, $groupName, $groupsOptions, FALSE,
+            array('id' => $fName, 'multiple' => 'multiple', 'class' => 'crm-select2 twenty')
           );
           $form->assign('groupCount', count($groupsOptions));
         }
@@ -139,47 +145,34 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
     }
 
     if ($type & self::TAG) {
-      $fName = 'tag';
-      if ($fieldName) {
-        $fName = $fieldName;
-      }
-      $form->_tagGroup[$fName] = 1;
-      $elements = array();
-      $tag = CRM_Core_BAO_Tag::getTags();
+      $tags = CRM_Core_BAO_Tag::getColorTags('civicrm_contact');
 
-      foreach ($tag as $id => $name) {
-        $elements[] = $form->createElement('checkbox', $id, NULL, $name);
-      }
-      if (!empty($elements)) {
-        $form->addGroup($elements, $fName, $tagName, '<br />');
-        $form->assign('tagCount', count($elements));
-      }
-
-      if ($isRequired) {
-        $form->addRule($fName, ts('%1 is a required field.', array(1 => $tagName)), 'required');
+      if (!empty($tags)) {
+        $form->add('select2', 'tag', ts('Tag(s)'), $tags, FALSE, array('class' => 'huge', 'placeholder' => ts('- select -'), 'multiple' => TRUE));
       }
 
       // build tag widget
       $parentNames = CRM_Core_BAO_Tag::getTagSet('civicrm_contact');
-
-      CRM_Core_Form_Tag::buildQuickForm($form, $parentNames, 'civicrm_contact', $contactId, TRUE, TRUE);
+      CRM_Core_Form_Tag::buildQuickForm($form, $parentNames, 'civicrm_contact', $contactId, FALSE, TRUE);
     }
     $form->assign('tagGroup', $form->_tagGroup);
   }
 
   /**
-   * set defaults for relevant form elements
+   * Set defaults for relevant form elements.
    *
-   * @param int    $id        the contact id
-   * @param array  $defaults  the defaults array to store the values in
-   * @param int    $type      what components are we interested in
-   * @param string $fieldName this is used in batch profile(i.e to build multiple blocks)
+   * @param int $id
+   *   The contact id.
+   * @param array $defaults
+   *   The defaults array to store the values in.
+   * @param int $type
+   *   What components are we interested in.
+   * @param string $fieldName
+   *   This is used in batch profile(i.e to build multiple blocks).
    *
-   * @return void
-   * @access public
-   * @static
+   * @param string $groupElementType
    */
-  static function setDefaults($id, &$defaults, $type = self::ALL, $fieldName = NULL, $groupElementType = 'checkbox') {
+  public static function setDefaults($id, &$defaults, $type = self::ALL, $fieldName = NULL, $groupElementType = 'checkbox') {
     $type = (int ) $type;
     if ($type & self::GROUP) {
       $fName = 'group';
@@ -190,7 +183,7 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
       $contactGroup = CRM_Contact_BAO_GroupContact::getContactGroup($id, 'Added', NULL, FALSE, TRUE);
       if ($contactGroup) {
         foreach ($contactGroup as $group) {
-          if ($groupElementType == 'crmasmSelect') {
+          if ($groupElementType == 'select') {
             $defaults[$fName][] = $group['group_id'];
           }
           else {
@@ -201,27 +194,17 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
     }
 
     if ($type & self::TAG) {
-      $fName = 'tag';
-      if ($fieldName) {
-        $fName = $fieldName;
-      }
-
-      $contactTag = CRM_Core_BAO_EntityTag::getTag($id);
-      if ($contactTag) {
-        foreach ($contactTag as $tag) {
-          $defaults[$fName . '[' . $tag . ']'] = 1;
-        }
-      }
+      $defaults['tag'] = implode(',', CRM_Core_BAO_EntityTag::getTag($id, 'civicrm_contact'));
     }
   }
 
   /**
-   * This function sets the default values for the form. Note that in edit/view mode
+   * Set default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
-   * @access public
    *
-   * @return None
+   * @param CRM_Core_Form $form
+   * @param array $defaults
    */
   public static function setDefaultValues(&$form, &$defaults) {
     $contactEditOptions = $form->get('contactEditOptions');
@@ -242,10 +225,11 @@ class CRM_Contact_Form_Edit_TagsAndGroups {
         // set the group and tag ids
         $groupElementType = 'checkbox';
         if (CRM_Utils_System::getClassName($form) == 'CRM_Contact_Form_Contact') {
-          $groupElementType = 'crmasmSelect';
+          $groupElementType = 'select';
         }
         self::setDefaults($form->_contactId, $defaults, self::ALL, NULL, $groupElementType);
       }
     }
   }
+
 }

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 {/if}
 
 {strip}
-<table class="selector">
+<table class="selector row-highlight">
 <thead class="sticky">
 {if ! $single and $context eq 'Search' }
   <th scope="col" title="Select Rows">{$form.toggleSelect.html}</th>
@@ -67,7 +67,13 @@
     <td class="crm-membership-end_date">{$row.membership_end_date|truncate:10:''|crmDate}</td>
     <td class="crm-membership-source">{$row.membership_source}</td>
     <td class="crm-membership-status crm-membership-status_{$row.membership_status}">{$row.membership_status}</td>
-    <td class="crm-membership-auto_renew">{if $row.auto_renew}<img src="{$config->resourceBase}i/check.gif" alt="{ts}Auto-renew{/ts}" /> {/if}</td>
+    <td class="crm-membership-auto_renew">
+      {if $row.auto_renew eq 1}
+        <i class="fa fa-check" aria-hidden="true" title="{ts}Auto-renew active{/ts}"></i>
+      {elseif $row.auto_renew eq 2}
+        <i class="fa fa-exclamation" aria-hidden="true" title="{ts}Auto-renew error{/ts}"></i>
+      {/if}
+    </td>
     <td>
         {$row.action|replace:'xx':$row.membership_id}
         {if $row.owner_membership_id}
@@ -90,13 +96,7 @@
 </table>
 {/strip}
 
-{if $context EQ 'Search'}
- <script type="text/javascript">
- {* this function is called to change the color of selected row(s) *}
-    var fname = "{$form.formName}";
-    on_load_init_checkboxes(fname);
- </script>
-{/if}
+
 
 {if $context EQ 'Search'}
     {include file="CRM/common/pager.tpl" location="bottom"}

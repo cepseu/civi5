@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,50 +30,38 @@
 {/if}
     <table class="form-layout-compressed{if $context EQ 'profile'} crm-profile-tagsandgroups{/if}">
       <tr>
-       {if $groupElementType eq 'crmasmSelect'}
-          <td><span class="label">{if $title}{$form.group.label}{/if}</span>
-            {$form.group.html}
-            {literal}
-            <script type="text/javascript">
-             cj(function(){
-               cj("select#group").crmasmSelect({
-                 respectParents: true
-               });
-             });
-             </script>
-             {/literal}
-          </td>
-      {/if}
-      {foreach key=key item=item from=$tagGroup}
-        {* $type assigned from dynamic.tpl *}
-        {if !$type || $type eq $key }
-          <td width={cycle name=tdWidth values="70%","30%"}><span class="label">{if $title}{$form.$key.label}{/if}</span>
-            <div id="crm-tagListWrap">
-              <table id="crm-tagGroupTable">
-                {foreach key=k item=it from=$form.$key}
-                  {if $k|is_numeric}
-                    <tr class={cycle values="'odd-row','even-row'" name=$key} id="crm-tagRow{$k}">
-                      <td>
-                        <strong>{$it.html}</strong><br />
-                        {if $item.$k.description}
-                          <div class="description">
-                            {$item.$k.description}
-                          </div>
-                        {/if}
-                      </td>
-                    </tr>
-                  {/if}
-                {/foreach}
-              </table>
+        {if !$type || $type eq 'tag'}
+          <td>
+            <div class="crm-section tag-section">
+              {if $title}{$form.tag.label}{/if}
+              {$form.tag.html}
             </div>
+            {if $context NEQ 'profile'}
+              {include file="CRM/common/Tagset.tpl"}
+            {/if}
           </td>
         {/if}
-      {/foreach}
-    </tr>
-    {if !$type || $type eq 'tag'}
-      <tr><td>{include file="CRM/common/Tag.tpl"}</td></tr>
-    {/if}
-  </table>
+        {if !$type || $type eq 'group'}
+          <td>
+            {if $groupElementType eq 'select'}
+              <div class="crm-section group-section">
+              {if $title}{$form.group.label}{/if}
+              {$form.group.html}
+            </div>
+            {else}
+              {foreach key=key item=item from=$tagGroup.group}
+                <div class="group-wrapper">
+                  {$form.group.$key.html}
+                  {if $item.description}
+                    <div class="description">{$item.description}</div>
+                  {/if}
+                </div>
+              {/foreach}
+            {/if}
+          </td>
+        {/if}
+      </tr>
+    </table>
 {if $title}
   </div>
 </div><!-- /.crm-accordion-wrapper -->

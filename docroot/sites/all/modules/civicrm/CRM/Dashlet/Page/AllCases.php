@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
+ * @copyright CiviCRM LLC (c) 2004-2017
  * $Id$
  *
  */
@@ -40,13 +40,11 @@
 class CRM_Dashlet_Page_AllCases extends CRM_Core_Page {
 
   /**
-   * List activities as dashlet
+   * List activities as dashlet.
    *
-   * @return none
-   *
-   * @access public
+   * @return void
    */
-  function run() {
+  public function run() {
     $context = CRM_Utils_Request::retrieve('context', 'String', $this, FALSE, 'dashlet');
     $this->assign('context', $context);
 
@@ -55,14 +53,19 @@ class CRM_Dashlet_Page_AllCases extends CRM_Core_Page {
       CRM_Core_Error::fatal(ts('You are not authorized to access this page.'));
     }
 
-    $session  = CRM_Core_Session::singleton();
-    $userID   = $session->get('userID');
-    $upcoming = CRM_Case_BAO_Case::getCases(TRUE, $userID, 'upcoming', $context);
+    $controller = new CRM_Core_Controller_Simple('CRM_Case_Form_Search',
+      ts('Case'), CRM_Core_Action::BROWSE,
+      NULL,
+      FALSE, FALSE, TRUE
+    );
+    $controller->setEmbedded(TRUE);
+    $controller->process();
+    $controller->run();
 
-    if (!empty($upcoming)) {
-      $this->assign('AllCases', $upcoming);
+    if (CRM_Case_BAO_Case::getCases(TRUE, array('type' => 'any'), 'dashboard', TRUE)) {
+      $this->assign('casePresent', TRUE);
     }
     return parent::run();
   }
-}
 
+}

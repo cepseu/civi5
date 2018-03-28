@@ -149,7 +149,7 @@ define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/ceps.local/docroot/sites/defaul
  *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/joomla/' );
  *
  */
-define( 'CIVICRM_UF_BASEURL'      , 'http://ceps.local/' );
+define( 'CIVICRM_UF_BASEURL'      , 'https://crm.ceps.eu/' );
 
 /*
  * If you are using any CiviCRM script in the bin directory that
@@ -157,7 +157,7 @@ define( 'CIVICRM_UF_BASEURL'      , 'http://ceps.local/' );
  * We recommend using a 16-32 bit alphanumeric/punctuation key.
  * More info at http://wiki.civicrm.org/confluence/display/CRMDOC/Command-line+Script+Configuration
  */
-define( 'CIVICRM_SITE_KEY', '1c64cfa471192a271ab2bc78eb283511d2a8' );
+define( 'CIVICRM_SITE_KEY', '54cf1d06e21af18dfa24fc61b3cce9c4' );
 
 /*
  * If you want to disable IDS, set this to 0.

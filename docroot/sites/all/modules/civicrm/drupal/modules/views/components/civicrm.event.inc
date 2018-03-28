@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  * Build the $data array for CiviEvent related tables
@@ -57,6 +57,32 @@ function _civicrm_event_data(&$data, $enabled) {
   $data['civicrm_event']['id'] = array(
     'title' => t('Event ID'),
     'help' => t('The numeric ID of the Event'),
+    'field' => array(
+      'handler' => 'views_handler_field_numeric',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+      'numeric' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'base' => 'civicrm_participant',
+      'base field' => 'event_id',
+      'handler' => 'views_handler_relationship',
+      'label' => t('Event -> Participant'),
+    ),
+  );
+
+  // Event Max-Partipicants
+  $data['civicrm_event']['max_participants'] = array(
+    'title' => t('Event Max-Participants'),
+    'help' => t('The maximal number of participants of the Event'),
     'field' => array(
       'handler' => 'views_handler_field_numeric',
       'click sortable' => TRUE,
@@ -155,7 +181,7 @@ function _civicrm_event_data(&$data, $enabled) {
   //EVENT TITLE
   $data['civicrm_event']['title'] = array(
     'title' => t('Title'),
-    'help' => t('The Event\'s Title'),
+    'help' => t("The Event's Title"),
     'field' => array(
       'handler' => 'civicrm_handler_field_event_link',
       'click sortable' => TRUE,
@@ -175,7 +201,7 @@ function _civicrm_event_data(&$data, $enabled) {
   // EVENT SUMMARY
   $data['civicrm_event']['summary'] = array(
     'title' => t('Summary'),
-    'help' => t('The Event\'s Summary'),
+    'help' => t("The Event's Summary"),
     'field' => array(
       'handler' => 'civicrm_handler_field_markup',
       'click sortable' => TRUE,
@@ -185,7 +211,7 @@ function _civicrm_event_data(&$data, $enabled) {
   // EVENT DESCRIPTION
   $data['civicrm_event']['description'] = array(
     'title' => t('Description'),
-    'help' => t('The Event\'s Full Description'),
+    'help' => t("The Event's Full Description"),
     'field' => array(
       'handler' => 'civicrm_handler_field_markup',
       'click sortable' => TRUE,
@@ -195,7 +221,7 @@ function _civicrm_event_data(&$data, $enabled) {
   //EVENT Start DATE
   $data['civicrm_event']['start_date'] = array(
     'title' => t('Start Date'),
-    'help' => t('The Event\'s Start Date'),
+    'help' => t("The Event's Start Date"),
     'field' => array(
       'handler' => 'civicrm_handler_field_datetime',
       'click sortable' => TRUE,
@@ -221,7 +247,7 @@ function _civicrm_event_data(&$data, $enabled) {
   //EVENT END DATE
   $data['civicrm_event']['end_date'] = array(
     'title' => t('End Date'),
-    'help' => t('The Event\'s End Date'),
+    'help' => t("The Event's End Date"),
     'field' => array(
       'handler' => 'civicrm_handler_field_datetime',
       'click sortable' => TRUE,
@@ -258,7 +284,7 @@ function _civicrm_event_data(&$data, $enabled) {
   //EVENT ONLINE REGISTRATION START DATE
   $data['civicrm_event']['registration_start_date'] = array(
     'title' => t('Registration Start Date'),
-    'help' => t('The Event\'s Online Registration Start Date'),
+    'help' => t("The Event's Online Registration Start Date"),
     'field' => array(
       'handler' => 'civicrm_handler_field_datetime',
       'click sortable' => TRUE,
@@ -279,7 +305,7 @@ function _civicrm_event_data(&$data, $enabled) {
   //EVENT ONLINE REGISTRATION END DATE
   $data['civicrm_event']['registration_end_date'] = array(
     'title' => t('Registration End Date'),
-    'help' => t('The Event\'s Online Registration End Date'),
+    'help' => t("The Event's Online Registration End Date"),
     'field' => array(
       'handler' => 'civicrm_handler_field_datetime',
       'click sortable' => TRUE,
@@ -317,6 +343,31 @@ function _civicrm_event_data(&$data, $enabled) {
       'handler' => 'views_handler_sort',
     ),
   );
+  // Event created_id
+  $data['civicrm_event']['created_id'] = array(
+    'title' => t('Created ID'),
+    'help' => t("Contact ID of the event's creator"),
+    'field' => array(
+      'handler' => 'civicrm_handler_field_event_link',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+      'allow empty' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'base' => 'civicrm_contact',
+      'field' => 'created_id',
+      'handler' => 'views_handler_relationship',
+      'label' => t('CiviCRM Contact of the event creator'),
+    ),
+  );
   // Link to Campaign Table
   if (isset($enabled['CiviCampaign'])) {
     $data['civicrm_event']['campaign_id'] = array(
@@ -342,7 +393,6 @@ function _civicrm_event_data(&$data, $enabled) {
       'field' => 'id',
     ),
   );
-
 
   //----------------------------------------------------------------
   // CIVICRM Participants are here, base tabling it up.
@@ -375,7 +425,6 @@ function _civicrm_event_data(&$data, $enabled) {
     'field' => 'contact_id',
   );
 
-
   //CiviCRM Participants - FIELDS
 
   //Numeric Participant ID
@@ -403,8 +452,8 @@ function _civicrm_event_data(&$data, $enabled) {
     'help' => t('The numeric ID of the Event'),
     'relationship' => array(
       'base' => 'civicrm_event',
-                                                                             'field' => 'event_id',
-                                                                             'left_field' => 'id',
+      'field' => 'event_id',
+      'left_field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('CiviCRM Event, with custom fields'),
     ),
@@ -412,7 +461,7 @@ function _civicrm_event_data(&$data, $enabled) {
 
   //Numeric Contact ID
   $data['civicrm_participant']['contact_id'] = array(
-    'title' => t('Participant\'s Contact ID'),
+    'title' => t("Participant's Contact ID"),
     'help' => t('The numeric ID of the Contact of the Participant'),
     'field' => array(
       'handler' => 'views_handler_field_numeric',
@@ -441,12 +490,13 @@ function _civicrm_event_data(&$data, $enabled) {
   $data['civicrm_participant']['status'] = array(
     'title' => t('Participant Status'),
     'real field' => 'status_id',
-    'help' => t('The Status of the Participant\'s Booking and Attendance'),
+    'help' => t("The Status of the Participant's Booking and Attendance"),
     'field' => array(
       'handler' => 'civicrm_handler_field_pseudo_constant',
       'click sortable' => TRUE,
       'pseudo class' => 'CRM_Event_PseudoConstant',
       'pseudo method' => 'participantStatus',
+      'pseudo args' => array(NULL, NULL, 'label'),
     ),
     'argument' => array(
       'handler' => 'views_handler_argument',
@@ -456,6 +506,7 @@ function _civicrm_event_data(&$data, $enabled) {
       'allow empty' => TRUE,
       'pseudo class' => 'CRM_Event_PseudoConstant',
       'pseudo method' => 'participantStatus',
+      'pseudo args' => array(NULL, NULL, 'label'),
     ),
     'sort' => array(
       'handler' => 'views_handler_sort',
@@ -601,6 +652,7 @@ function _civicrm_event_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'fee_currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -627,14 +679,46 @@ function _civicrm_event_data(&$data, $enabled) {
       ),
     );
   }
-  // HOP SCOTCHING OUR WAY THROUGH THE CIVICRM_PARTICIPANT_PAYMENT
 
-  // Explain how this table joins to others.
+  // Add the Contribution relevant to the Participant.
+  $data['civicrm_participant_payment']['table']['group'] = t('Participant Payment (Contributions)');
+
+  $data['civicrm_participant_payment']['table']['base'] = array(
+    'field' => 'id',
+    'title' => t('Participant Payment (Contributions)'),
+    'help' => t("View participant's Contributions (for paid events)."),
+  );
+
   $data['civicrm_participant_payment']['table']['join'] = array(
-    // Directly links to event table
     'civicrm_participant' => array(
       'left_field' => 'id',
       'field' => 'participant_id',
+    ),
+  );
+
+  $data['civicrm_participant_payment']['contribution_id'] = array(
+    'title' => t('Participant Contribution Id'),
+    'help' => t("The numeric ID of the Participant's Contribution (for event fees)."),
+    'field' => array(
+      'handler' => 'views_handler_field_numeric',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+      'numeric' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'base' => 'civicrm_contribution',
+      'left_field' => 'id',
+      'field' => 'contribution_id',
+      'handler' => 'views_handler_relationship',
+      'label' => t('CiviCRM Participant Payment, with custom fields'),
     ),
   );
 
@@ -655,4 +739,32 @@ function _civicrm_event_data(&$data, $enabled) {
       'handler' => 'civicrm_handler_field_link_participant',
     ),
   );
+
+  //Add CiviVolunteer if it is installed
+  $sql = "SHOW TABLES LIKE 'civicrm_volunteer_project'";
+  $result = CRM_Core_DAO::executeQuery($sql);
+  if ($result->fetch()) {
+    $data['civicrm_volunteer_project']['table']['group'] = t('CiviCRM CiviVolunteer');
+    $data['civicrm_volunteer_project']['table']['join'] = array(
+      'civicrm_event' => array(
+        'left_field' => 'id',
+        'field' => 'entity_id',
+      ),
+    );
+    //Add check to see if volunteering is turned on
+    $data['civicrm_volunteer_project']['is_active'] = array(
+      'title' => t('Is Volunteering On'),
+      'help' => t('Is Volunteering enabled for the event?'),
+      'field' => array(
+        'handler' => 'views_handler_field_boolean',
+        'click sortable' => FALSE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_filter_boolean_operator',
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort',
+      ),
+    );
+  }
 }

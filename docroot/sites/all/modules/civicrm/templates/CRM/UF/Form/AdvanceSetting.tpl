@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,14 +23,6 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
-{literal}
-<script type="text/javascript">
-    cj(function() {
-        cj().crmAccordions();
-    });
-</script>
-{/literal}
-
 <div class="crm-accordion-wrapper collapsed">
  <div class="crm-accordion-header">
     Advanced Settings
@@ -61,6 +53,16 @@
         <tr class="crm-uf-advancesetting-form-block-cancel_URL">
             <td class="label">{$form.cancel_URL.label}</td>
             <td>{$form.cancel_URL.html} {help id='id-cancel_URL' file="CRM/UF/Form/Group.hlp"}</td>
+        </tr>
+
+        <tr class="crm-uf-advancesetting-form-block-cancel_button_text">
+            <td class="label">{$form.cancel_button_text.label}</td>
+            <td>{$form.cancel_button_text.html} {help id='id-cancel_button_text' file="CRM/UF/Form/Group.hlp"}</td>
+        </tr>
+
+        <tr class="crm-uf-advancesetting-form-block-submit_button_text">
+            <td class="label">{$form.submit_button_text.label}</td>
+            <td>{$form.submit_button_text.html} {help id='id-submit_button_text' file="CRM/UF/Form/Group.hlp"}</td>
         </tr>
 
         <tr class="crm-uf-advancesetting-form-block-add_captcha">

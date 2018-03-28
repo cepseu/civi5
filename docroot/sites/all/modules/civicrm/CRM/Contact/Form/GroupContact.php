@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,19 +23,16 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
- * This class generates form components for groupContact
- *
+ * This class generates form components for groupContact.
  */
 class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
 
@@ -53,23 +50,47 @@ class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
    */
   protected $_contactId;
 
-  function preProcess() {
+  /**
+   * Explicitly declare the entity api name.
+   */
+  public function getDefaultEntity() {
+    return 'GroupContact';
+  }
+
+  /**
+   * Explicitly declare the form context.
+   */
+  public function getDefaultContext() {
+    return 'create';
+  }
+
+  /**
+   * Pre process form.
+   */
+  public function preProcess() {
     $this->_contactId = $this->get('contactId');
     $this->_groupContactId = $this->get('groupContactId');
     $this->_context = CRM_Utils_Request::retrieve('context', 'String', $this);
   }
 
   /**
-   * Function to build the form
-   *
-   * @return None
-   * @access public
+   * Build the form object.
    */
   public function buildQuickForm() {
     // get the list of all the groups
     if ($this->_context == 'user') {
       $onlyPublicGroups = CRM_Utils_Request::retrieve('onlyPublicGroups', 'Boolean', $this, FALSE);
-      $allGroups = CRM_Core_PseudoConstant::staticGroup($onlyPublicGroups);
+      $ids = CRM_Core_PseudoConstant::allGroup();
+      $heirGroups = CRM_Contact_BAO_Group::getGroupsHierarchy($ids);
+
+      $allGroups = array();
+      foreach ($heirGroups as $id => $group) {
+        // make sure that this group has public visibility
+        if ($onlyPublicGroups && $group['visibility'] == 'User and User Admin Only') {
+          continue;
+        }
+        $allGroups[$id] = $group;
+      }
     }
     else {
       $allGroups = CRM_Core_PseudoConstant::group();
@@ -90,7 +111,7 @@ class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
       $groupSelect = $groupHierarchy;
     }
 
-    $groupSelect = array( '' => ts('- select group -')) + $groupSelect;
+    $groupSelect = array('' => ts('- select group -')) + $groupSelect;
 
     if (count($groupSelect) > 1) {
       $session = CRM_Core_Session::singleton();
@@ -102,7 +123,7 @@ class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
         $msg = ts('Add to a group');
       }
 
-      $this->add('select', 'group_id', $msg, $groupSelect, TRUE);
+      $this->addField('group_id', array('class' => 'crm-action-menu fa-plus', 'placeholder' => $msg, 'options' => $groupSelect));
 
       $this->addButtons(array(
           array(
@@ -116,16 +137,12 @@ class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
   }
 
   /**
-   *
-   * @access public
-   *
-   * @return None
+   * Post process form.
    */
   public function postProcess() {
     $contactID = array($this->_contactId);
-    $groupId   = $this->controller->exportValue('GroupContact', 'group_id');
-    $method    = 'Admin';
-    $method    = ($this->_context == 'user') ? 'Web' : 'Admin';
+    $groupId = $this->controller->exportValue('GroupContact', 'group_id');
+    $method = ($this->_context == 'user') ? 'Web' : 'Admin';
 
     $session = CRM_Core_Session::singleton();
     $userID = $session->get('userID');
@@ -140,6 +157,5 @@ class CRM_Contact_Form_GroupContact extends CRM_Core_Form {
       CRM_Core_Session::setStatus(ts("Contact has been added to '%1'.", array(1 => $groups[$groupId])), ts('Added to Group'), 'success');
     }
   }
-  //end of function
-}
 
+}

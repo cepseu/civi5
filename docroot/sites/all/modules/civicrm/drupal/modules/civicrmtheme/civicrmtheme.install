@@ -1,15 +1,15 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
  | CiviCRM is free software; you can copy, modify, and distribute it  |
  | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007.                                       |
+ | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
  |                                                                    |
  | CiviCRM is distributed in the hope that it will be useful, but     |
  | WITHOUT ANY WARRANTY; without even the implied warranty of         |
@@ -17,23 +17,24 @@
  | See the GNU Affero General Public License for more details.        |
  |                                                                    |
  | You should have received a copy of the GNU Affero General Public   |
- | License along with this program; if not, contact CiviCRM LLC       |
+ | License and the CiviCRM Licensing Exception along                  |
+ | with this program; if not, contact CiviCRM LLC                     |
  | at info[AT]civicrm[DOT]org. If you have questions about the        |
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
+ * @copyright CiviCRM LLC (c) 2004-2017
  * $Id$
  *
  */
 
-/*
- * Implemenation of hook_enable()
+/**
+ * Implements hook_enable().
  */
 function civicrmtheme_enable() {
   // update module weight to 110, to make it run after system and civicrm
@@ -41,19 +42,19 @@ function civicrmtheme_enable() {
 }
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function civicrmtheme_install() {
-  $link = l(t('Administer > Appearance > Administration theme'), 'admin/appearance');
-  drupal_set_message(t("CiviCRM theme configuration setting is available under !link", array('!link' => $link)));
+  $t = get_t();
+  $link = l($t('Administer > Appearance > Administration theme'), 'admin/appearance');
+  drupal_set_message($t("CiviCRM theme configuration setting is available under !link", array('!link' => $link)));
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function civicrmtheme_uninstall() {
   // cleaning variables
   variable_del('civicrmtheme_theme_admin');
   variable_del('civicrmtheme_theme_public');
 }
-

@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /*
    / * Unchanged anonymous code contribution. No claim.
@@ -37,15 +37,16 @@
  * @ingroup civicrm_field_handlers
  */
 class civicrm_handler_field_custom_file extends views_handler_field {
-  function construct() {
+  public function construct() {
     parent::construct();
     civicrm_initialize();
     $this->additional_fields['entity_id'] = 'entity_id';
   }
 
-  function render($values) {
+  public function render($values) {
     $value = $values->{$this->field_alias};
     if (!is_null($value)) {
+      $path = 'civicrm/file';
       $fileType = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_File',
         $value,
         'mime_type'
@@ -57,19 +58,20 @@ class civicrm_handler_field_custom_file extends views_handler_field {
           $value,
           'uri'
         );
-        $config = CRM_Core_Config::singleton();
-        return str_replace('persist/contribute', 'custom', $config->imageUploadURL) . $uri;
+
+        $path = sprintf('%s/imagefile', $path);
       }
-      else {
-        $entityField = $this->aliases['entity_id'];
-        return CRM_Utils_System::url('civicrm/file',
-          "reset=1&id={$value}&eid={$values->$entityField}",
-          TRUE, NULL, TRUE, TRUE
-        );
-      }
+      $entityField = $this->aliases['entity_id'];
+      $url = CRM_Utils_System::url($path,
+        "id={$value}&eid={$values->$entityField}",
+        TRUE, FALSE, FALSE, TRUE
+      );
+      return CRM_Utils_System::url($path,
+        "id={$value}&eid={$values->$entityField}",
+        TRUE, FALSE, FALSE, TRUE
+      );
     }
     return NULL;
   }
+
 }
-
-

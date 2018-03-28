@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,50 +23,49 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_View_UserDashBoard {
 
   /**
-   * This function is called when action is browse
-   *
-   * return null
-   * @access public
+   * Called when action is browse.
    */
-  function browse() {
+  public function browse() {
     $count = CRM_Contact_BAO_GroupContact::getContactGroup(
       $this->_contactId,
       NULL,
       NULL, TRUE, TRUE,
-      $this->_onlyPublicGroups
+      $this->_onlyPublicGroups,
+      NULL, NULL, TRUE
     );
 
-    $in =& CRM_Contact_BAO_GroupContact::getContactGroup(
+    $in = CRM_Contact_BAO_GroupContact::getContactGroup(
       $this->_contactId,
       'Added',
       NULL, FALSE, TRUE,
-      $this->_onlyPublicGroups
+      $this->_onlyPublicGroups,
+      NULL, NULL, TRUE
     );
 
-    $pending =& CRM_Contact_BAO_GroupContact::getContactGroup(
+    $pending = CRM_Contact_BAO_GroupContact::getContactGroup(
       $this->_contactId,
       'Pending',
       NULL, FALSE, TRUE,
-      $this->_onlyPublicGroups
+      $this->_onlyPublicGroups,
+      NULL, NULL, TRUE
     );
 
-    $out =& CRM_Contact_BAO_GroupContact::getContactGroup(
+    $out = CRM_Contact_BAO_GroupContact::getContactGroup(
       $this->_contactId,
       'Removed',
       NULL, FALSE, TRUE,
-      $this->_onlyPublicGroups
+      $this->_onlyPublicGroups,
+      NULL, NULL, TRUE
     );
 
     $this->assign('groupCount', $count);
@@ -76,17 +75,16 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
   }
 
   /**
-   * This function is called when action is update
+   * called when action is update.
    *
-   * @param int    $groupID group id
+   * @param int $groupId
    *
-   * return null
-   * @access public
+   * @return null
    */
-  function edit($groupId = NULL) {
+  public function edit($groupId = NULL) {
     $this->assign('edit', $this->_edit);
     if (!$this->_edit) {
-      return;
+      return NULL;
     }
 
     $action = CRM_Utils_Request::retrieve('action', 'String',
@@ -95,10 +93,8 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
     );
 
     if ($action == CRM_Core_Action::DELETE) {
-      $groupContactId =
-        CRM_Utils_Request::retrieve('gcid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
-      $status =
-        CRM_Utils_Request::retrieve('st', 'String', CRM_Core_DAO::$_nullObject, TRUE);
+      $groupContactId = CRM_Utils_Request::retrieve('gcid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+      $status = CRM_Utils_Request::retrieve('st', 'String', CRM_Core_DAO::$_nullObject, TRUE);
       if (is_numeric($groupContactId) && $status) {
         CRM_Contact_Page_View_GroupContact::del($groupContactId, $status, $this->_contactId);
       }
@@ -131,15 +127,13 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
   }
 
   /**
-   * This function is the main function that is called when the page loads,
-   * it decides the which action has to be taken for the page.
+   * The main function that is called when the page loads.
    *
-   * return null
-   * @access public
+   * It decides the which action has to be taken for the page.
    */
-  function run() {
+  public function run() {
     $this->edit();
     $this->browse();
   }
-}
 
+}

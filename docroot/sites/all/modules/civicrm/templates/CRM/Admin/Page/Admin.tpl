@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
     <div class="messages status no-popup">
       <table>
         <tr><td class="tasklist">
-          {ts 1='http://civicrm.org/civicrm/profile/create?reset=1&gid=15'}Have you registered this site at CiviCRM.org? If not, please help strengthen the CiviCRM ecosystem by taking a few minutes to <a href="%1" target="_blank">fill out the site registration form</a>. The information collected will help us prioritize improvements, target our communications and build the community. If you have a technical role for this site, be sure to check "Keep in Touch" to receive technical updates (a low volume mailing list).{/ts}</td>
+          {ts 1=$registerSite}Have you registered this site at CiviCRM.org? If not, please help strengthen the CiviCRM ecosystem by taking a few minutes to <a href="%1" target="_blank">fill out the site registration form</a>. The information collected will help us prioritize improvements, target our communications and build the community. If you have a technical role for this site, be sure to check "Keep in Touch" to receive technical updates (a low volume mailing list).{/ts}</td>
         </tr>
       </table>
     </div>
@@ -72,7 +72,7 @@
         {foreach from=$group.fields item=panelItem  key=panelName name=groupLoop}
             <tr class="{cycle values="odd-row,even-row" name=$groupName}">
                 <td style="vertical-align: top; width:24px;">
-                    <a href="{$panelItem.url}"{if $panelItem.extra} {$panelItem.extra}{/if} ><img src="{$config->resourceBase}i/{if $panelItem.icon}{$panelItem.icon}{else}admin/small/option.png{/if}" alt="{$panelItem.title}"/></a>
+                    <a href="{$panelItem.url}"{if $panelItem.extra} {$panelItem.extra}{/if} ><img src="{$config->resourceBase}i/{if $panelItem.icon}{$panelItem.icon}{else}admin/small/option.png{/if}" alt="{$panelItem.title|escape}"/></a>
                 </td>
                 <td class="report font-size11pt" style="vertical-align: text-top;" width="20%">
                     <a href="{$panelItem.url}"{if $panelItem.extra} {$panelItem.extra}{/if} id="id_{$panelItem.id}">{$panelItem.title}</a>

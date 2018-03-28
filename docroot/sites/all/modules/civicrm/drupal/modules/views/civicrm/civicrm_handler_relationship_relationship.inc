@@ -12,7 +12,7 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
    * Preload the list of relationship_types and store in the static variable
    * $relationship_types
    */
-  function construct() {
+  public function construct() {
     parent::construct();
 
     if (!civicrm_initialize()) {
@@ -22,7 +22,7 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
 
     // relationshipType() returns information about relations as array with fields
     // 'name_a_b', 'name_b_a', 'contact_type_a' and 'contact_type_b'.
-    $options = array(0 => 'Any');
+    $options = array();
     foreach (CRM_Core_PseudoConstant::relationshipType('label') as $id => $info) {
       $options[$id] = "{$info['label_a_b']} | {$info['label_b_a']}";
     }
@@ -34,7 +34,7 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
    * to the view. By defining these here, Views will take care of saving the
    * values submitted from the options form.
    */
-  function option_definition() {
+  public function option_definition() {
     $options = parent::option_definition();
     $options['relationship_type'] = array('default' => 0);
     $options['relationship_state'] = array('default' => 1);
@@ -45,21 +45,22 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
    * Add relationship_type drowndown and relationship_state checkbox to
    * relationship configuration form.
    */
-  function options_form(&$form, &$form_state) {
+  public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
     $form['relationship_type'] = array(
       '#type' => 'select',
+      '#multiple' => TRUE,
       '#title' => 'Choose a specific relationship type',
       '#options' => self::$relationship_types,
-      '#description' => t('Use this drop down to limit this relatioship to a specific type of CiviCRM relationship'),
+      '#description' => t('Choose to limit this relationship to one or more specific types of CiviCRM relationship.'),
       '#default_value' => $this->options['relationship_type'],
     );
     $form['relationship_state'] = array(
       '#type' => 'checkbox',
       '#title' => t('Limit results only to active relationships?'),
       '#default_value' => $this->options['relationship_state'],
-      '#description' => t('Exclude relationships that are inactive.')
+      '#description' => t('Exclude relationships that are inactive.'),
     );
   }
 
@@ -67,7 +68,7 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
    * Modify the default views relationship query to optionally specify
    * join conditions for relationship_type or is_active (relationship_state).
    */
-  function query() {
+  public function query() {
     parent::query();
 
     // Specify the type of relationships to join
@@ -76,7 +77,6 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
         'value' => $this->options['relationship_type'],
         'numeric' => TRUE,
         'field' => 'relationship_type_id',
-        'operator' => '=',
       );
     }
     // Specify the state of relationships to join
@@ -89,4 +89,5 @@ class civicrm_handler_relationship_relationship extends views_handler_relationsh
       );
     }
   }
+
 }

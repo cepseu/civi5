@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -24,7 +24,7 @@
  +--------------------------------------------------------------------+
 *}
 
-{include file="CRM/common/enableDisable.tpl"}
+{include file="CRM/common/enableDisableApi.tpl"}
 
 {if $action eq 4} {* when action is view *}
     {if $recur}
@@ -39,7 +39,7 @@
             <tr><td class="label">{ts}Created Date{/ts}</td><td>{$recur.create_date|crmDate}</td></tr>
             {if $recur.modified_date}<tr><td class="label">{ts}Modified Date{/ts}</td><td>{$recur.modified_date|crmDate}</td></tr>{/if}
             {if $recur.cancel_date}<tr><td class="label">{ts}Cancelled Date{/ts}</td><td>{$recur.cancel_date|crmDate}</td></tr>{/if}
-            {if $recur.cancel_date}<tr><td class="label">{ts}End Date{/ts}</td><td>{$recur.end_date|crmDate}</td></tr>{/if}
+            {if $recur.end_date}<tr><td class="label">{ts}End Date{/ts}</td><td>{$recur.end_date|crmDate}</td></tr>{/if}
             {if $recur.processor_id}<tr><td class="label">{ts}Processor ID{/ts}</td><td>{$recur.processor_id}</td></tr>{/if}
             <tr><td class="label">{ts}Transaction ID{/ts}</td><td>{$recur.trxn_id}</td></tr>
             {if $recur.invoice_id}<tr><td class="label">{ts}Invoice ID{/ts}</td><td>{$recur.invoice_id}</td></tr>{/if}
@@ -49,14 +49,21 @@
             {if $recur.invoice_id}<tr><td class="label">{ts}Failure Retry Date{/ts}</td><td>{$recur.next_sched_contribution_date|crmDate}</td></tr>{/if}
             <tr><td class="label">{ts}Auto Renew?{/ts}</td><td>{if $recur.auto_renew}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td></tr>
             {if $recur.payment_processor}<tr><td class="label">{ts}Payment Processor{/ts}</td><td>{$recur.payment_processor}</td></tr>{/if}
+            {if $recur.financial_type}<tr><td class="label">{ts}Financial Type{/ts}</td><td>{$recur.financial_type}</td></tr>{/if}
+            {if $recur.campaign}<tr><td class="label">{ts}Campaign{/ts}</td><td>{$recur.campaign}</td></tr>{/if}
+            {if $recur.membership_id}<tr>
+              <td class="label">{ts}Membership{/ts}</td>
+              <td><a class="crm-hover-button" href='{crmURL p="civicrm/contact/view/membership" q="action=view&reset=1&cid=`$contactId`&id=`$recur.membership_id`&context=membership&selectedChild=member"}'>{$recur.membership_name}</a></td>
+              </tr>
+            {/if}
           </table>
-          <div class="crm-submit-buttons"><input type="button" name='cancel' value="{ts}Done{/ts}" onclick="location.href='{crmURL p='civicrm/contact/view' q='action=browse&selectedChild=contribute'}';"/></div>
+          <div class="crm-submit-buttons"><a class="button cancel crm-form-submit" href="{crmURL p='civicrm/contact/view' q='action=browse&selectedChild=contribute'}">{ts}Done{/ts}</a></div>
         </div>
     {/if}
 {/if}
 {if $recurRows}
     {strip}
-    <table class="selector">
+    <table class="selector row-highlight">
         <tr class="columnheader">
             <th scope="col">{ts}Amount{/ts}</th>
             <th scope="col">{ts}Frequency{/ts}</th>
@@ -68,8 +75,8 @@
 
         {foreach from=$recurRows item=row}
             {assign var=id value=$row.id}
-            <tr id="row_{$row.id}" class="{cycle values="even-row,odd-row"}{if NOT $row.is_active} disabled{/if}">
-                <td>{$row.amount|crmMoney}{if $row.is_test} ({ts}test{/ts}){/if}</td>
+            <tr id="contribution_recur-{$row.id}" data-action="cancel" class="crm-entity {cycle values="even-row,odd-row"}{if NOT $row.is_active} disabled{/if}">
+                <td>{$row.amount|crmMoney:$row.currency}{if $row.is_test} ({ts}test{/ts}){/if}</td>
                 <td>{ts}Every{/ts} {$row.frequency_interval} {$row.frequency_unit} </td>
                 <td>{$row.start_date|crmDate}</td>
                 <td>{$row.installments}</td>

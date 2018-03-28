@@ -1,7 +1,7 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.4                                                |
+  | CiviCRM version 4.7                                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -21,7 +21,7 @@
   | GNU Affero General Public License or the licensing of CiviCRM,     |
   | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
   +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  * Build the $data array for CiviContribute related tables
@@ -59,15 +59,14 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => 'contribution_recur_id',
   );
 
+  //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
 
-  // TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
   $data['civicrm_contribution']['table']['join']['civicrm_contact'] = array(
     'left_table' => 'civicrm_contact',
     'left_field' => 'id',
     'field' => 'contact_id',
   );
 
-  //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
   $data['civicrm_contribution']['table']['join']['civicrm_participant'] = array(
     'left_table' => 'civicrm_participant_payment',
     'left_field' => 'contribution_id',
@@ -165,7 +164,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
 
   //Payment Instrument Used
   $data['civicrm_contribution']['payment_instrument'] = array(
-    'title' => t('Payment Instrument'),
+    'title' => t('Payment Method'),
     'real field' => 'payment_instrument_id',
     'help' => t('The Payment Instrument Used for the Contribution'),
     'field' => array(
@@ -188,11 +187,9 @@ function _civicrm_contribute_data(&$data, $enabled) {
     ),
   );
 
-
-
   //Contribution Receive Date
   $data['civicrm_contribution']['receive_date'] = array(
-    'title' => t('Receive Date'),
+    'title' => t('Date Received'),
     'help' => t('The Date the Contribution was received / paid'),
     'field' => array(
       'handler' => 'civicrm_handler_field_datetime',
@@ -208,7 +205,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
   );
 
   civicrm_views_add_date_arguments($data['civicrm_contribution'], array(
-    'title' => 'Receive Date',
+    'title' => t('Date Received'),
       'name' => 'receive_date',
     ));
   //Non Deductible Amount of Contribution
@@ -218,6 +215,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -238,6 +236,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -257,6 +256,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -277,6 +277,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -520,7 +521,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
   );
   $data['civicrm_contribution']['check_number'] = array(
     'title' => t('Check Number'),
-    'help' => t('Contribution\'s Check Number'),
+    'help' => t("Contribution's Check Number"),
     'field' => array(
       'handler' => 'views_handler_field',
       'click sortable' => TRUE,
@@ -548,15 +549,34 @@ function _civicrm_contribute_data(&$data, $enabled) {
       ),
     );
   }
+  // Link to Membership table
+  if (isset($enabled['CiviMember'])) {
+    $data['civicrm_contribution']['membership_id'] = array(
+      'title' => t('Memberships Records'),
+      'help' => 'Bring memberships records',
+      'relationship' => array(
+        'base' => 'civicrm_membership',
+        'base field' => 'id',
+        'handler' => 'civicrm_handler_relationship_memberships_contributions',
+        'label' => t('Contribution -> Membership'),
+      ),
+    );
+  }
+  //link to line-items
+  $data['civicrm_contribution']['line_item_id'] = array(
+    'title' => t('Line-items Records'),
+    'help' => 'Bring line-items records',
+    'relationship' => array(
+      'base' => 'civicrm_line_item',
+      'base field' => 'contribution_id',
+      'field' => 'id',
+      'handler' => 'views_handler_relationship',
+      'label' => t('Contribution -> line-item'),
+    ),
+  );
 
-
-  /*
-     * Soft Credits
-     */
-
-
+  // Soft Credits
   $data['civicrm_contribution_soft']['table']['group'] = t('CiviCRM  Soft Credits');
-
 
   //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
   $data['civicrm_contribution_soft']['table']['join']['civicrm_contribution'] = array(
@@ -606,7 +626,8 @@ function _civicrm_contribute_data(&$data, $enabled) {
     ),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'id',
+      'left_field' => 'id',
+      'field' => 'contact_id',
       'handler' => 'views_handler_relationship',
       'label' => t('Soft Contribution -> Contact Record'),
     ),
@@ -618,6 +639,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument',
@@ -670,14 +692,8 @@ function _civicrm_contribute_data(&$data, $enabled) {
     ),
   );
 
-
-  /*
-     * Soft Credits
-     */
-
-
+  // Soft Credits
   $data['civicrm_contribution_recur']['table']['group'] = t('CiviCRM  Recurring Contributions');
-
 
   //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
   $data['civicrm_contribution_recur']['table']['join']['civicrm_contribution'] = array(
@@ -743,6 +759,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument',
@@ -914,6 +931,26 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'title' => 'Recurring Contribution End Date',
       'name' => 'end_date',
     ));
+  //Prcocessor ID
+  $data['civicrm_contribution_recur']['processor_id'] = array(
+    'title' => t('Processor ID'),
+    'help' => t('The Processor ID of the Recurring Contribution'),
+    'field' => array(
+      'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
+      'numeric' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_string',
+      'allow empty' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
   //Unique Transaction ID
   $data['civicrm_contribution_recur']['trxn_id'] = array(
     'title' => t('Unique Transaction ID'),
@@ -958,7 +995,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
   $data['civicrm_contribution_recur']['contribution_status'] = array(
     'title' => t('Contribution Status'),
     'real field' => 'contribution_status_id',
-    'help' => t('The Contribution\'s Status'),
+    'help' => t("The Contribution's Status"),
     'field' => array(
       'handler' => 'civicrm_handler_field_pseudo_constant',
       'click sortable' => TRUE,
@@ -1126,6 +1163,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -1297,7 +1335,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
 
   // contribution page
   $data['civicrm_pcp']['contribution_page'] = array(
-    'title' => t('Associated Contribution or Event Page'),
+    'title' => t('Associated Contribution Page'),
     'real field' => 'page_id',
     'help' => t('The Contribution or Event Page with which this Personal Campaign Page is associated.'),
     'field' => array(
@@ -1315,6 +1353,34 @@ function _civicrm_contribute_data(&$data, $enabled) {
       'allow empty' => TRUE,
       'pseudo class' => 'CRM_Contribute_PseudoConstant',
       'pseudo method' => 'contributionPage',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+
+  // event page
+  $data['civicrm_pcp']['event_page'] = array(
+    'title' => t('Associated Event Page'),
+    'real field' => 'page_id',
+    'help' => t('The Event or Event Page with which this Personal Campaign Page is associated.'),
+    'field' => array(
+      'handler' => 'civicrm_handler_field_pseudo_constant',
+      'click sortable' => TRUE,
+      'pseudo class' => 'CRM_Event_PseudoConstant',
+      'pseudo method' => 'event',
+      'pseudo args' => array(NULL, FALSE, 'is_template = 0'),
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument',
+      'numeric' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'civicrm_handler_filter_pseudo_constant',
+      'allow empty' => TRUE,
+      'pseudo class' => 'CRM_Event_PseudoConstant',
+      'pseudo method' => 'event',
+      'pseudo args' => array(NULL, FALSE, 'is_template = 0'),
     ),
     'sort' => array(
       'handler' => 'views_handler_sort',
@@ -1366,6 +1432,7 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => array(
       'handler' => 'civicrm_handler_field_money',
       'click sortable' => TRUE,
+      'currency field' => 'currency',
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
@@ -1479,4 +1546,3 @@ function _civicrm_contribute_data(&$data, $enabled) {
     ),
   );
 }
-

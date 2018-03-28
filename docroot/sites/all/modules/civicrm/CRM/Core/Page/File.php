@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,25 +23,38 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
+ * @copyright CiviCRM LLC (c) 2004-2017
  * $Id$
  *
  */
 class CRM_Core_Page_File extends CRM_Core_Page {
 
-  function run() {
-    $eid    = CRM_Utils_Request::retrieve('eid', 'Positive', $this, TRUE);
-    $fid    = CRM_Utils_Request::retrieve('fid', 'Positive', $this, FALSE);
-    $id     = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
-    $quest  = CRM_Utils_Request::retrieve('quest', 'String', $this);
+  /**
+   * Run page.
+   */
+  public function run() {
+    $fileName = CRM_Utils_Request::retrieve('filename', 'String', $this);
+    $path = CRM_Core_Config::singleton()->customFileUploadDir . $fileName;
+    $mimeType = CRM_Utils_Request::retrieve('mime-type', 'String', $this);
     $action = CRM_Utils_Request::retrieve('action', 'String', $this);
+    $download = CRM_Utils_Request::retrieve('download', 'Integer', $this, FALSE, 1);
+    $disposition = $download == 0 ? 'inline' : 'download';
 
-    list($path, $mimeType) = CRM_Core_BAO_File::path($id, $eid, NULL, $quest);
+    // if we are not providing essential parameter needed for file preview then
+    if (empty($fileName) && empty($mimeType)) {
+      $eid = CRM_Utils_Request::retrieve('eid', 'Positive', $this, TRUE);
+      $fid = CRM_Utils_Request::retrieve('fid', 'Positive', $this, FALSE);
+      $id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      $quest = CRM_Utils_Request::retrieve('quest', 'String', $this);
+
+      list($path, $mimeType) = CRM_Core_BAO_File::path($id, $eid, NULL, $quest);
+    }
+
     if (!$path) {
       CRM_Core_Error::statusBounce('Could not retrieve the file');
     }
@@ -52,7 +65,7 @@ class CRM_Core_Page_File extends CRM_Core_Page {
     }
 
     if ($action & CRM_Core_Action::DELETE) {
-      if (CRM_Utils_Request::retrieve('confirmed', 'Boolean', CRM_Core_DAO::$_nullObject)) {
+      if (CRM_Utils_Request::retrieve('confirmed', 'Boolean')) {
         CRM_Core_BAO_File::deleteFileReferences($id, $eid, $fid);
         CRM_Core_Session::setStatus(ts('The attached file has been deleted.'), ts('Complete'), 'success');
 
@@ -65,9 +78,12 @@ class CRM_Core_Page_File extends CRM_Core_Page {
       CRM_Utils_System::download(
         CRM_Utils_File::cleanFileName(basename($path)),
         $mimeType,
-        $buffer
+        $buffer,
+        NULL,
+        TRUE,
+        $disposition
       );
     }
   }
-}
 
+}
