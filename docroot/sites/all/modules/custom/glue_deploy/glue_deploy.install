@@ -1,9 +1,0 @@
-<?php
-
-/**
- * Example update hook 
- */
-/*
-function glue_deploy_update_7001() {
-  
-}*/

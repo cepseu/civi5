@@ -1,4 +1,0 @@
-; $Id$
-name = "CEPS General"
-description = "Custom code for CEPS"
-core = 7.x

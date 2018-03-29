@@ -1,1 +1,0 @@
-//Use this module for all site related  glue code that does not belong in a feature or a functionality module

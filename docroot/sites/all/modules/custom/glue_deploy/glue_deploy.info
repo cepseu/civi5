@@ -1,4 +1,0 @@
-name = "glue_deploy"
-description = "Deploy module use it to deploy your code"
-core = 7.x
-package = Dropsolid

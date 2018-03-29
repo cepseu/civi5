@@ -1,4 +1,0 @@
-name = WK Field update
-description = field update for CEPS
-core = 7.x
-package = 'Wunderkraut'
