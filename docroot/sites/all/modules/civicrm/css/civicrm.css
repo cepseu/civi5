@@ -384,6 +384,10 @@ input.crm-form-entityref {
   text-align: right;
 }
 
+.crm-container .crm-section .label label{
+  white-space: normal;
+}
+
 .crm-container .label-left .label {
   text-align: left;
 }
@@ -2118,6 +2122,10 @@ a.crm-i:hover {
   color: #6177D5;
 }
 
+.crm-i.crm-i-green {
+  color: #86c661;
+}
+
 .crm-i-button {
   position: relative;
 }
@@ -3123,6 +3131,10 @@ div.m ul#civicrm-menu,
 }
 .crm-container .select2-container[class*=" fa-"]:before {
   display: none;
+}
+.crm-container .select2-results .select2-result.select2-disabled > .select2-result-label {
+  opacity: .6;
+  cursor: default;
 }
 
 /* Restore this property otherwise our css overrides it */

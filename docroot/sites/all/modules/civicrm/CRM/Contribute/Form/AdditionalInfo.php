@@ -1,9 +1,9 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.7                                                |
+  | CiviCRM version 5                                                  |
   +--------------------------------------------------------------------+
-  | Copyright CiviCRM LLC (c) 2004-2017                                |
+  | Copyright CiviCRM LLC (c) 2004-2018                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 class CRM_Contribute_Form_AdditionalInfo {
 
@@ -209,7 +209,7 @@ class CRM_Contribute_Form_AdditionalInfo {
     );
 
     $productDetails = array();
-    CRM_Contribute_BAO_ManagePremiums::retrieve($premiumParams, $productDetails);
+    CRM_Contribute_BAO_Product::retrieve($premiumParams, $productDetails);
     $dao->financial_type_id = CRM_Utils_Array::value('financial_type_id', $productDetails);
     if (!empty($options[$selectedProductID])) {
       $dao->product_option = $options[$selectedProductID][$selectedProductOptionID];

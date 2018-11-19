@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.7                                                |
+ | CiviCRM version 5                                                  |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,7 +27,7 @@
 
 /**
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 
 /**
@@ -208,7 +208,8 @@ class CRM_Event_Form_Registration_Confirm extends CRM_Event_Form_Registration {
     $this->assignToTemplate();
 
     if ($this->_values['event']['is_monetary'] &&
-      ($this->_params[0]['amount'] || $this->_params[0]['amount'] == 0)
+      ($this->_params[0]['amount'] || $this->_params[0]['amount'] == 0) &&
+      !$this->_requireApproval
     ) {
       $this->_amount = array();
 

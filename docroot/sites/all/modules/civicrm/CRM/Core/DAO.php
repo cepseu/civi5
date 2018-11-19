@@ -1,9 +1,9 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.7                                                |
+  | CiviCRM version 5                                                  |
   +--------------------------------------------------------------------+
-  | Copyright CiviCRM LLC (c) 2004-2017                                |
+  | Copyright CiviCRM LLC (c) 2004-2018                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -31,7 +31,7 @@
  * All DAO classes should inherit from this class.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 
 if (!defined('DB_DSN_MODE')) {
@@ -47,6 +47,13 @@ require_once 'CRM/Core/I18n.php';
  * Class CRM_Core_DAO
  */
 class CRM_Core_DAO extends DB_DataObject {
+
+  /**
+   * How many times has this instance been cloned.
+   *
+   * @var int
+   */
+  protected $resultCopies = 0;
 
   /**
    * @var null
@@ -119,6 +126,22 @@ class CRM_Core_DAO extends DB_DataObject {
     $this->__table = $this->getTableName();
   }
 
+  public function __clone() {
+    if (!empty($this->_DB_resultid)) {
+      $this->resultCopies++;
+    }
+  }
+
+  /**
+   * Class destructor.
+   */
+  public function __destruct() {
+    if ($this->resultCopies === 0) {
+      $this->free();
+    }
+    $this->resultCopies--;
+  }
+
   /**
    * Empty definition for virtual function.
    */
@@ -162,6 +185,29 @@ class CRM_Core_DAO extends DB_DataObject {
     global $_DB_DATAOBJECT;
     $dao = new CRM_Core_DAO();
     return $_DB_DATAOBJECT['CONNECTIONS'][$dao->_database_dsn_md5];
+  }
+
+  /**
+   * Disables usage of the ONLY_FULL_GROUP_BY Mode if necessary
+   */
+  public static function disableFullGroupByMode() {
+    $currentModes = CRM_Utils_SQL::getSqlModes();
+    if (in_array('ONLY_FULL_GROUP_BY', $currentModes) && CRM_Utils_SQL::isGroupByModeInDefault()) {
+      $key = array_search('ONLY_FULL_GROUP_BY', $currentModes);
+      unset($currentModes[$key]);
+      CRM_Core_DAO::executeQuery("SET SESSION sql_mode = %1", array(1 => array(implode(',', $currentModes), 'String')));
+    }
+  }
+
+  /**
+   * Re-enables ONLY_FULL_GROUP_BY sql_mode as necessary..
+   */
+  public static function reenableFullGroupByMode() {
+    $currentModes = CRM_Utils_SQL::getSqlModes();
+    if (!in_array('ONLY_FULL_GROUP_BY', $currentModes) && CRM_Utils_SQL::isGroupByModeInDefault()) {
+      $currentModes[] = 'ONLY_FULL_GROUP_BY';
+      CRM_Core_DAO::executeQuery("SET SESSION sql_mode = %1", array(1 => array(implode(',', $currentModes), 'String')));
+    }
   }
 
   /**
@@ -803,6 +849,9 @@ class CRM_Core_DAO extends DB_DataObject {
   /**
    * Check if there is a given column in a specific table.
    *
+   * @deprecated
+   * @see CRM_Core_BAO_SchemaHandler::checkIfFieldExists
+   *
    * @param string $tableName
    * @param string $columnName
    * @param bool $i18nRewrite
@@ -812,16 +861,7 @@ class CRM_Core_DAO extends DB_DataObject {
    *   true if exists, else false
    */
   public static function checkFieldExists($tableName, $columnName, $i18nRewrite = TRUE) {
-    $query = "
-SHOW COLUMNS
-FROM $tableName
-LIKE %1
-";
-    $params = array(1 => array($columnName, 'String'));
-    $dao = CRM_Core_DAO::executeQuery($query, $params, TRUE, NULL, FALSE, $i18nRewrite);
-    $result = $dao->fetch() ? TRUE : FALSE;
-    $dao->free();
-    return $result;
+    return CRM_Core_BAO_SchemaHandler::checkIfFieldExists($tableName, $columnName, $i18nRewrite);
   }
 
   /**
@@ -1066,6 +1106,29 @@ FROM   civicrm_domain
       $result[] = $this->toArray();
     }
     return $result;
+  }
+
+  /**
+   * Return the results as PHP generator.
+   *
+   * @param string $type
+   *   Whether the generator yields 'dao' objects or 'array's.
+   */
+  public function fetchGenerator($type = 'dao') {
+    while ($this->fetch()) {
+      switch ($type) {
+        case 'dao':
+          yield $this;
+          break;
+
+        case 'array':
+          yield $this->toArray();
+          break;
+
+        default:
+          throw new \RuntimeException("Invalid record type ($type)");
+      }
+    }
   }
 
   /**
@@ -1662,10 +1725,11 @@ FROM   civicrm_domain
    *
    * @param $componentIDs
    * @param string $tableName
+   * @param string $idField
    *
    * @return array
    */
-  public static function &getContactIDsFromComponent(&$componentIDs, $tableName) {
+  public static function getContactIDsFromComponent($componentIDs, $tableName, $idField = 'id') {
     $contactIDs = array();
 
     if (empty($componentIDs)) {
@@ -1676,7 +1740,7 @@ FROM   civicrm_domain
     $query = "
 SELECT contact_id
   FROM $tableName
- WHERE id IN ( $IDs )
+ WHERE $idField IN ( $IDs )
 ";
 
     $dao = CRM_Core_DAO::executeQuery($query);
@@ -1971,6 +2035,8 @@ SELECT contact_id
    * @param null $string
    *
    * @return string
+   * @deprecated
+   * @see CRM_Utils_SQL_TempTable
    */
   public static function createTempTableName($prefix = 'civicrm', $addRandomString = TRUE, $string = NULL) {
     $tableName = $prefix . "_temp";
@@ -2217,6 +2283,54 @@ SELECT contact_id
       }
     }
     return $refsFound;
+  }
+
+  /**
+   * Get all references to contact table.
+   *
+   * This includes core tables, custom group tables, tables added by the merge
+   * hook and  the entity_tag table.
+   *
+   * Refer to CRM-17454 for information on the danger of querying the information
+   * schema to derive this.
+   */
+  public static function getReferencesToContactTable() {
+    if (isset(\Civi::$statics[__CLASS__]) && isset(\Civi::$statics[__CLASS__]['contact_references'])) {
+      return \Civi::$statics[__CLASS__]['contact_references'];
+    }
+    $contactReferences = [];
+    $coreReferences = CRM_Core_DAO::getReferencesToTable('civicrm_contact');
+    foreach ($coreReferences as $coreReference) {
+      if (!is_a($coreReference, 'CRM_Core_Reference_Dynamic')) {
+        $contactReferences[$coreReference->getReferenceTable()][] = $coreReference->getReferenceKey();
+      }
+    }
+    self::appendCustomTablesExtendingContacts($contactReferences);
+
+    // FixME for time being adding below line statically as no Foreign key constraint defined for table 'civicrm_entity_tag'
+    $contactReferences['civicrm_entity_tag'][] = 'entity_id';
+    \Civi::$statics[__CLASS__]['contact_references'] = $contactReferences;
+    return \Civi::$statics[__CLASS__]['contact_references'];
+  }
+
+  /**
+   * Add custom tables that extend contacts to the list of contact references.
+   *
+   * CRM_Core_BAO_CustomGroup::getAllCustomGroupsByBaseEntity seems like a safe-ish
+   * function to be sure all are retrieved & we don't miss subtypes or inactive or multiples
+   * - the down side is it is not cached.
+   *
+   * Further changes should be include tests in the CRM_Core_MergerTest class
+   * to ensure that disabled, subtype, multiple etc groups are still captured.
+   *
+   * @param array $cidRefs
+   */
+  public static function appendCustomTablesExtendingContacts(&$cidRefs) {
+    $customValueTables = CRM_Core_BAO_CustomGroup::getAllCustomGroupsByBaseEntity('Contact');
+    $customValueTables->find();
+    while ($customValueTables->fetch()) {
+      $cidRefs[$customValueTables->table_name] = array('entity_id');
+    }
   }
 
   /**
